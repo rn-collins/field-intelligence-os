@@ -40,8 +40,6 @@ export type NavItem = {
   readonly activatesIn: PhaseId;
   /** Screen ID from the v1.0 spec, kept for traceability. */
   readonly screenId: string;
-  /** Shown in the mobile tab bar (space allows five). */
-  readonly inMobileTabBar?: boolean;
 };
 
 export type NavSection = {
@@ -67,7 +65,6 @@ export const NAV_SECTIONS: readonly NavSection[] = [
         summary: "What matters now across every active deployment.",
         activatesIn: "02",
         screenId: "SCR-01",
-        inMobileTabBar: true,
       },
       {
         href: "/deployments",
@@ -75,7 +72,6 @@ export const NAV_SECTIONS: readonly NavSection[] = [
         summary: "Plan, run and close field deployments from one workspace.",
         activatesIn: "02",
         screenId: "SCR-02",
-        inMobileTabBar: true,
       },
     ],
   },
@@ -89,7 +85,6 @@ export const NAV_SECTIONS: readonly NavSection[] = [
         summary: "Sources, participants and collaborators, with relationship history.",
         activatesIn: "03",
         screenId: "SCR-05",
-        inMobileTabBar: true,
       },
       {
         href: "/organizations",
@@ -104,7 +99,6 @@ export const NAV_SECTIONS: readonly NavSection[] = [
         summary: "Interviews and encounters, with ground rules, consent and cognition updates.",
         activatesIn: "04",
         screenId: "SCR-06",
-        inMobileTabBar: true,
       },
     ],
   },
@@ -206,9 +200,34 @@ export const ALL_NAV_ITEMS: readonly NavItem[] = NAV_SECTIONS.flatMap((section) 
 
 export const ALL_ROUTES: readonly NavItem[] = [...ALL_NAV_ITEMS, ...SUB_ROUTES];
 
-export const MOBILE_TAB_ITEMS: readonly NavItem[] = ALL_NAV_ITEMS.filter(
-  (item) => item.inMobileTabBar,
-);
+/**
+ * Mobile primary navigation: Home · Deployments · Capture · Search · More.
+ *
+ * An earlier revision exposed five modules in the tab bar and left the other
+ * eight unreachable from mobile entirely — Claims, Evidence, Systems, Assets,
+ * Outputs, Organizations, Canon and Settings simply could not be opened on a
+ * phone. Five slots cannot hold thirteen destinations, so the fifth is a menu
+ * rather than a thirteenth compromise.
+ *
+ * "Capture" routes to Field Mode, keeping it one tap (B2).
+ */
+export type MobilePrimaryItem = {
+  readonly label: string;
+  /** Absent for the menu trigger, which opens a sheet rather than navigating. */
+  readonly href?: string;
+  readonly kind: "route" | "menu";
+};
+
+export const MOBILE_PRIMARY: readonly MobilePrimaryItem[] = [
+  { label: "Home", href: "/", kind: "route" },
+  { label: "Deployments", href: "/deployments", kind: "route" },
+  { label: "Capture", href: "/field", kind: "route" },
+  { label: "Search", href: "/search", kind: "route" },
+  { label: "More", kind: "menu" },
+] as const;
+
+/** Every module reachable from the "More" sheet, grouped as on desktop. */
+export const MOBILE_MENU_SECTIONS: readonly NavSection[] = NAV_SECTIONS;
 
 export function findNavItem(href: string): NavItem | undefined {
   return ALL_ROUTES.find((item) => item.href === href);

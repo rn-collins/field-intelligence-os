@@ -6,7 +6,7 @@ import {
   ALL_ROUTES,
   BUILD_PHASES,
   isActiveRoute,
-  MOBILE_TAB_ITEMS,
+  MOBILE_PRIMARY,
   NAV_SECTIONS,
   findNavItem,
 } from "@/features/navigation/nav-model";
@@ -58,14 +58,27 @@ describe("navigation model", () => {
     expect(NAV_SECTIONS).toHaveLength(5);
   });
 
-  it("keeps the mobile tab bar within a usable width", () => {
-    // Four nav items plus a permanent Field Mode tab.
-    expect(MOBILE_TAB_ITEMS.length).toBeLessThanOrEqual(4);
-    expect(MOBILE_TAB_ITEMS.length).toBeGreaterThan(0);
+  it("keeps the mobile tab bar to five slots", () => {
+    expect(MOBILE_PRIMARY).toHaveLength(5);
   });
 
-  it("puts the Command Center in the mobile tab bar", () => {
-    expect(MOBILE_TAB_ITEMS.some((item) => item.href === "/")).toBe(true);
+  it("reserves the last slot for the module menu", () => {
+    // Five slots cannot hold thirteen destinations. The fifth is a menu rather
+    // than a thirteenth compromise; without it, eight modules had no mobile route.
+    const menus = MOBILE_PRIMARY.filter((i) => i.kind === "menu");
+    expect(menus).toHaveLength(1);
+    expect(MOBILE_PRIMARY.at(-1)?.kind).toBe("menu");
+  });
+
+  it("keeps Field Mode one tap away", () => {
+    expect(MOBILE_PRIMARY.some((i) => i.href === "/field")).toBe(true);
+  });
+
+  it("points every mobile route at a real page", () => {
+    for (const item of MOBILE_PRIMARY) {
+      if (item.kind !== "route") continue;
+      expect(existsSync(pageFileFor(item.href!)), `${item.href} has no page`).toBe(true);
+    }
   });
 });
 

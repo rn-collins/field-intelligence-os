@@ -125,9 +125,10 @@ test.describe("mobile navigation", () => {
   test("reaches Field Mode in one tap", async ({ page }) => {
     await page.goto("/");
 
+    // The tab is labelled "Capture" — the action, not the module name.
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Field" })
+      .getByRole("link", { name: "Capture" })
       .click();
 
     await expect(page).toHaveURL(/\/field$/);
