@@ -49,15 +49,40 @@ describe("DeploymentCard", () => {
   });
 
   it("renders a deterministic day count from the supplied reference date", () => {
-    const { rerender } = render(<DeploymentCard deployment={manhattan} asOf="2026-09-13" />);
+    const committed = { ...manhattan, status: "planning" as const };
+
+    const { rerender } = render(<DeploymentCard deployment={committed} asOf="2026-09-13" />);
     expect(screen.getByText(/Starts in 7 days/)).toBeInTheDocument();
 
-    rerender(<DeploymentCard deployment={manhattan} asOf="2026-09-20" />);
+    rerender(<DeploymentCard deployment={committed} asOf="2026-09-20" />);
     expect(screen.getByText(/Starts today/)).toBeInTheDocument();
   });
 
-  it("states that deployment workspaces are not yet available", () => {
+  /**
+   * An earlier revision hard-coded the status badge to "Planning", which
+   * asserted a commitment the operator had not made. In a provenance system
+   * that is a correctness bug, not a cosmetic one.
+   */
+  it("renders the status from the record rather than assuming one", () => {
+    const { rerender } = render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
+    expect(screen.getByText("Candidate — not selected yet")).toBeInTheDocument();
+    expect(screen.queryByText("Planning")).not.toBeInTheDocument();
+
+    rerender(
+      <DeploymentCard deployment={{ ...manhattan, status: "planning" }} asOf={SEED_AS_OF} />,
+    );
+    expect(screen.getByText("Planning")).toBeInTheDocument();
+  });
+
+  it("phrases a candidate's timing conditionally", () => {
     render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
+
+    // Not "starts in" — nothing starts until the option is selected.
+    expect(screen.getByText(/if this option is selected/)).toBeInTheDocument();
+  });
+
+  it("states that deployment workspaces are not yet available for committed trips", () => {
+    render(<DeploymentCard deployment={{ ...manhattan, status: "planning" }} asOf={SEED_AS_OF} />);
 
     expect(screen.getByText(/Phase 02/)).toBeInTheDocument();
   });

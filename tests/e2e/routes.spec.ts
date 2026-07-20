@@ -39,10 +39,19 @@ test("demonstration data is labelled and cannot be dismissed", async ({ page }) 
   await expect(page.getByRole("button", { name: /dismiss|close|hide/i })).toHaveCount(0);
 });
 
-test("the Command Center surfaces the deployment date conflict", async ({ page }) => {
+test("the Command Center leads with the open September decision", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByText(/overlap on the calendar/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Decision required" })).toBeVisible();
+  await expect(page.getByText(/mutually exclusive alternatives, not two trips/i)).toBeVisible();
+  await expect(page.getByText(/Verified airfare and routing cost/i)).toBeVisible();
+});
+
+test("candidate deployments are not presented as committed", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByText("Candidate — not selected yet")).toHaveCount(2);
+  await expect(page.getByText(/^Starts in \d+ days\.$/)).toHaveCount(0);
 });
 
 test("module placeholders name the phase that activates them", async ({ page }) => {

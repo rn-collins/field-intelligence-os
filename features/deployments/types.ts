@@ -6,8 +6,23 @@
  * import with a Supabase query without rewriting the components that consume it.
  */
 
-/** Status pipeline from the v1.0 spec, SCR-02. */
+/**
+ * Status pipeline from the v1.0 spec, SCR-02, plus two states the spec omits.
+ *
+ * `candidate` and `not-selected` are additions. SCR-02 assumes every deployment
+ * is one the operator has committed to, but the September 2026 planning record
+ * shows Manhattan and Reykjavík as *competing* options for a single window with
+ * the choice still open. Without a candidate state, a competing option has to be
+ * stored as `planning`, which asserts a commitment that was never made — and in
+ * a system whose purpose is provenance, silently upgrading "considering" to
+ * "planned" is the exact failure mode to avoid.
+ *
+ * Recorded in `docs/build/OPEN_QUESTIONS.md` #13 for ratification against the
+ * v1.0 specification.
+ */
 export const DEPLOYMENT_STATUSES = [
+  "candidate",
+  "not-selected",
   "planning",
   "ready",
   "active",
@@ -17,6 +32,19 @@ export const DEPLOYMENT_STATUSES = [
 ] as const;
 
 export type DeploymentStatus = (typeof DEPLOYMENT_STATUSES)[number];
+
+/** Statuses that mean the operator has committed to running this deployment. */
+export const COMMITTED_STATUSES = [
+  "planning",
+  "ready",
+  "active",
+  "processing",
+  "closed",
+] as const satisfies readonly DeploymentStatus[];
+
+export function isCommitted(deployment: { readonly status: DeploymentStatus }): boolean {
+  return (COMMITTED_STATUSES as readonly DeploymentStatus[]).includes(deployment.status);
+}
 
 /**
  * Provenance is a required discriminant rather than an optional boolean.
@@ -58,6 +86,45 @@ export type Deployment = {
   /** Subject lanes this deployment covers. */
   readonly lanes: readonly string[];
   readonly prerequisites: readonly Prerequisite[];
+  /**
+   * IDs of deployments this one is a mutually exclusive alternative to.
+   *
+   * Declared exclusivity, not inferred. Two deployments sharing dates may be a
+   * mistake; two deployments the operator has explicitly framed as competing
+   * options is a decision waiting to be made. The system must not conflate them.
+   */
+  readonly competesWith?: readonly string[];
+};
+
+/**
+ * An open choice between mutually exclusive candidate deployments.
+ *
+ * Derived, never stored: exclusivity lives on the deployments themselves, so a
+ * decision cannot drift out of sync with the records it concerns.
+ */
+export type DeploymentDecision = {
+  /** Stable identifier derived from the candidate IDs, sorted. */
+  readonly id: string;
+  readonly candidates: readonly Deployment[];
+  /** Whether the candidates also collide on the calendar. */
+  readonly sharesWindow: boolean;
+  /**
+   * What must be known before the decision can be made. Named inputs, not a
+   * vague "needs review" — SCR-01 requires every alert to link to its cause.
+   */
+  readonly outstandingInputs: readonly string[];
+};
+
+/**
+ * Two committed deployments whose dates collide.
+ *
+ * Distinct from a `DeploymentDecision`: this is an error state — the operator
+ * has committed to two things that cannot both happen — whereas a decision is
+ * an open question that has not been answered yet.
+ */
+export type ScheduleConflict = {
+  readonly id: string;
+  readonly deployments: readonly [Deployment, Deployment];
 };
 
 /** The computed readiness of a deployment. Never stored; always derived. */

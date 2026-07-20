@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { findPendingDecisions, findScheduleConflicts } from "@/features/deployments/decisions";
 import { calculateReadiness } from "@/features/deployments/readiness";
-import { SEED_AS_OF, SEED_DEPLOYMENTS } from "@/lib/seed/deployments";
+import { SEED_AS_OF, SEED_DEPLOYMENTS, SEPTEMBER_DECISION_INPUTS } from "@/lib/seed/deployments";
 
 /**
  * Guards on the demonstration data.
@@ -70,6 +71,47 @@ describe("seed data shape", () => {
     expect(byCity["Manhattan"]?.endsOn).toBe("2026-09-22");
     expect(byCity["Reykjavík"]?.startsOn).toBe("2026-09-20");
     expect(byCity["Reykjavík"]?.endsOn).toBe("2026-09-26");
+  });
+
+  /**
+   * The overlapping dates are deliberate: these are competing options for one
+   * September window. A future maintainer seeing the collision will be tempted
+   * to "fix" it by moving a date, which would fabricate a two-trip itinerary
+   * the owner never chose. This test states the intent so that edit fails loudly.
+   */
+  it("models the two September deployments as competing candidates", () => {
+    for (const deployment of SEED_DEPLOYMENTS) {
+      expect(deployment.status).toBe("candidate");
+      expect(deployment.competesWith?.length ?? 0).toBeGreaterThan(0);
+    }
+
+    const decisions = findPendingDecisions(SEED_DEPLOYMENTS);
+    expect(decisions).toHaveLength(1);
+    expect(decisions[0]?.candidates).toHaveLength(2);
+    expect(decisions[0]?.sharesWindow).toBe(true);
+  });
+
+  it("reports no scheduling conflict, because neither option is committed", () => {
+    expect(findScheduleConflicts(SEED_DEPLOYMENTS)).toEqual([]);
+  });
+
+  it("omits the decision scores, rationales and costs from the planning workbook", () => {
+    // Live commercial and editorial strategy. The seed models the shape of the
+    // decision, never its contents.
+    //
+    // Scans the exported data rather than the file text: the module's own
+    // documentation names what it excludes, and matching that prose would be a
+    // false positive. Credential and contact scans still read the raw source,
+    // where a commented-out value would be a genuine finding.
+    const data = JSON.stringify({
+      deployments: SEED_DEPLOYMENTS,
+      inputs: SEPTEMBER_DECISION_INPUTS,
+    });
+
+    expect(data).not.toMatch(/weighted|rationale|\bscore\b/i);
+    expect(data).not.toMatch(/Climate Week|Fat Nugs|Cannes|Hawai/i);
+    // No monetary amounts. The decision is gated on costs; the costs are not ours to hold.
+    expect(data).not.toMatch(/[$£€]\s?\d|\b\d+\s?(USD|EUR|GBP|ISK)\b/i);
   });
 
   it("pins the reference date so rendering is deterministic", () => {

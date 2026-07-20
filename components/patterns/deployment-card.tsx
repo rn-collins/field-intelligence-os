@@ -3,7 +3,11 @@ import {
   daysUntilStart,
   durationInDays,
 } from "@/features/deployments/readiness";
-import type { Deployment, PrerequisiteStatus } from "@/features/deployments/types";
+import type {
+  Deployment,
+  DeploymentStatus,
+  PrerequisiteStatus,
+} from "@/features/deployments/types";
 import { Card, CardBody, CardFooter, CardHeader } from "@/components/ui/card";
 import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
 import { ReadinessMeter } from "./readiness-meter";
@@ -20,6 +24,33 @@ const STATUS_LABEL: Record<PrerequisiteStatus, string> = {
   "in-progress": "In progress",
   "not-started": "Not started",
   blocked: "Blocked",
+};
+
+/**
+ * Deployment status is rendered from the record, never assumed. An earlier
+ * revision hard-coded "Planning" here, which asserted a commitment the operator
+ * had not made — the precise error this component now exists to avoid.
+ */
+const DEPLOYMENT_STATUS_TONE: Record<DeploymentStatus, StatusTone> = {
+  candidate: "pending",
+  "not-selected": "neutral",
+  planning: "neutral",
+  ready: "verified",
+  active: "verified",
+  processing: "in-progress",
+  closed: "neutral",
+  cancelled: "neutral",
+};
+
+const DEPLOYMENT_STATUS_LABEL: Record<DeploymentStatus, string> = {
+  candidate: "Candidate — not selected yet",
+  "not-selected": "Not selected",
+  planning: "Planning",
+  ready: "Ready",
+  active: "Active",
+  processing: "Processing",
+  closed: "Closed",
+  cancelled: "Cancelled",
 };
 
 const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
@@ -58,7 +89,9 @@ export function DeploymentCard({ deployment, asOf }: { deployment: Deployment; a
               {formatRange(deployment)} · {duration} days
             </p>
           </div>
-          <StatusBadge tone="neutral">Planning</StatusBadge>
+          <StatusBadge tone={DEPLOYMENT_STATUS_TONE[deployment.status]}>
+            {DEPLOYMENT_STATUS_LABEL[deployment.status]}
+          </StatusBadge>
         </div>
 
         <p className="text-ink-subtle font-mono text-xs">
@@ -108,12 +141,21 @@ export function DeploymentCard({ deployment, asOf }: { deployment: Deployment; a
 
       <CardFooter>
         <p className="text-ink-muted text-sm">
-          {days > 0
-            ? `Starts in ${days} days.`
-            : days === 0
-              ? "Starts today."
-              : `Started ${Math.abs(days)} days ago.`}{" "}
-          <span className="text-ink-subtle">Deployment workspaces open in Phase 02.</span>
+          {deployment.status === "candidate" ? (
+            <>
+              Would start in {days} days{" "}
+              <span className="text-ink-subtle">if this option is selected.</span>
+            </>
+          ) : (
+            <>
+              {days > 0
+                ? `Starts in ${days} days.`
+                : days === 0
+                  ? "Starts today."
+                  : `Started ${Math.abs(days)} days ago.`}{" "}
+              <span className="text-ink-subtle">Deployment workspaces open in Phase 02.</span>
+            </>
+          )}
         </p>
       </CardFooter>
     </Card>
