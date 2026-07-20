@@ -1,3 +1,7 @@
+import Link from "next/link";
+import { Card, CardBody, CardFooter, CardHeader } from "@/components/ui/card";
+import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
+import type { HeadingLevel } from "@/components/ui/states";
 import {
   calculateReadiness,
   daysUntilStart,
@@ -8,9 +12,6 @@ import type {
   DeploymentStatus,
   PrerequisiteStatus,
 } from "@/features/deployments/types";
-import { Card, CardBody, CardFooter, CardHeader } from "@/components/ui/card";
-import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
-import type { HeadingLevel } from "@/components/ui/states";
 import { ReadinessMeter } from "./readiness-meter";
 
 const STATUS_TONE: Record<PrerequisiteStatus, StatusTone> = {
@@ -20,17 +21,13 @@ const STATUS_TONE: Record<PrerequisiteStatus, StatusTone> = {
   blocked: "blocked",
 };
 
-const STATUS_LABEL: Record<PrerequisiteStatus, string> = {
-  complete: "Complete",
-  "in-progress": "In progress",
-  "not-started": "Not started",
-  blocked: "Blocked",
-};
-
 /**
  * Deployment status is rendered from the record, never assumed. An earlier
  * revision hard-coded "Planning" here, which asserted a commitment the operator
  * had not made — the precise error this component now exists to avoid.
+ *
+ * Labels are short (C5). "Candidate — not selected yet" wrapped onto two lines
+ * inside a badge; the qualifier now sits in supporting text where it has room.
  */
 const DEPLOYMENT_STATUS_TONE: Record<DeploymentStatus, StatusTone> = {
   candidate: "pending",
@@ -44,17 +41,23 @@ const DEPLOYMENT_STATUS_TONE: Record<DeploymentStatus, StatusTone> = {
 };
 
 const DEPLOYMENT_STATUS_LABEL: Record<DeploymentStatus, string> = {
-  candidate: "Candidate — not selected yet",
+  candidate: "Candidate",
   "not-selected": "Not selected",
   planning: "Planning",
   ready: "Ready",
   active: "Active",
   processing: "Processing",
   closed: "Closed",
-  cancelled: "Cancelled",
+  cancelled: "Canceled",
 };
 
-const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
+/** Supporting text shown beneath the badge, where there is room to be clear. */
+const DEPLOYMENT_STATUS_DETAIL: Partial<Record<DeploymentStatus, string>> = {
+  candidate: "Not selected yet",
+  "not-selected": "Another option was chosen",
+};
+
+const DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   month: "short",
   year: "numeric",
@@ -68,12 +71,22 @@ function formatRange(deployment: Deployment): string {
 }
 
 /**
- * One deployment as it appears on the Command Center.
+ * A deployment as it appears on the Command Center: a **summary**, not a record.
  *
- * Everything rendered here is derived from the seed record — readiness, the day
- * count, the outstanding list. There are no decorative statistics: SCR-01
- * requires that "no count is displayed without queryable underlying records",
- * and a Phase 00 shell is exactly where that discipline is easiest to abandon.
+ * Scope is deliberate. An earlier revision rendered the full prerequisite list,
+ * every subject lane, every note and the raw record ID on the home screen, which
+ * `docs/standards/UI_STANDARD.md` warns against directly — dense dashboards that
+ * hide the next action. The summary answers four questions: where, when, how
+ * ready, and what is stopping it. Everything else belongs to the deployment
+ * detail page in Phase 02.
+ *
+ * Nothing is deleted to achieve this. The full prerequisite list, lanes, notes
+ * and identifiers remain on the `Deployment` record, unrendered here.
+ *
+ * Everything shown is derived from the record — readiness, the day count, the
+ * top blocker. SCR-01 requires that "no count is displayed without queryable
+ * underlying records", and a Phase 00 shell is where that discipline is easiest
+ * to abandon.
  */
 export function DeploymentCard({
   deployment,
@@ -89,91 +102,83 @@ export function DeploymentCard({
   headingLevel?: HeadingLevel;
 }) {
   const Heading = `h${headingLevel}` as const;
-  const SubHeading = `h${Math.min(headingLevel + 1, 6) as HeadingLevel}` as const;
   const readiness = calculateReadiness(deployment);
   const days = daysUntilStart(deployment, asOf);
   const duration = durationInDays(deployment);
 
+  // The single most important outstanding item. `outstanding` is already sorted
+  // worst-first, so the head of the list is the thing most likely to stop the trip.
+  const topBlocker = readiness.outstanding[0];
+  const remaining = Math.max(readiness.outstanding.length - 1, 0);
+  const statusDetail = DEPLOYMENT_STATUS_DETAIL[deployment.status];
+
   return (
     <Card as="article" className="flex flex-col">
-      <CardHeader className="space-y-2">
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-          <div className="space-y-0.5">
-            <Heading className="text-ink text-lg font-semibold tracking-tight">
-              {deployment.city}
-            </Heading>
-            <p className="text-ink-muted text-sm">
-              {formatRange(deployment)} · {duration} days
-            </p>
-          </div>
+      <CardHeader className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <div className="space-y-0.5">
+          <Heading className="text-ink text-lg font-semibold tracking-tight">
+            {deployment.city}
+          </Heading>
+          <p className="text-ink-muted text-sm">
+            {formatRange(deployment)} · {duration} days
+          </p>
+        </div>
+
+        <div className="text-right">
           <StatusBadge tone={DEPLOYMENT_STATUS_TONE[deployment.status]}>
             {DEPLOYMENT_STATUS_LABEL[deployment.status]}
           </StatusBadge>
+          {statusDetail && <p className="text-ink-subtle mt-1 text-xs">{statusDetail}</p>}
         </div>
-
-        <p className="text-ink-subtle font-mono text-xs">
-          {deployment.timezone} · {deployment.id}
-        </p>
       </CardHeader>
 
       <CardBody className="flex-1 space-y-4">
-        <p className="text-ink-muted text-sm leading-relaxed">{deployment.mission}</p>
-
-        <ul className="flex flex-wrap gap-1.5">
-          {deployment.lanes.map((lane) => (
-            <li
-              key={lane}
-              className="border-border bg-surface-sunken text-ink-muted rounded-sm border px-2 py-0.5 text-xs"
-            >
-              {lane}
-            </li>
-          ))}
-        </ul>
-
         <ReadinessMeter readiness={readiness} />
 
-        {readiness.outstanding.length > 0 && (
-          <div className="space-y-2">
-            <SubHeading className="text-ink-muted text-xs font-medium tracking-wide uppercase">
-              Outstanding prerequisites
-            </SubHeading>
-            <ul className="space-y-2">
-              {readiness.outstanding.map((item) => (
-                <li key={item.id} className="flex flex-wrap items-start gap-2 text-sm">
-                  <StatusBadge tone={STATUS_TONE[item.status]}>
-                    {STATUS_LABEL[item.status]}
-                  </StatusBadge>
-                  <span className="text-ink min-w-0 flex-1">
-                    {item.label}
-                    {item.note && (
-                      <span className="text-ink-subtle block text-xs">{item.note}</span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
+        {topBlocker ? (
+          <div className="space-y-1.5">
+            <p className="text-ink-muted text-xs font-medium tracking-wide uppercase">
+              Biggest blocker
+            </p>
+            <div className="flex flex-wrap items-start gap-2 text-sm">
+              <StatusBadge tone={STATUS_TONE[topBlocker.status]}>
+                {topBlocker.status === "blocked" ? "Blocked" : "Not started"}
+              </StatusBadge>
+              <span className="text-ink min-w-0 flex-1">
+                {topBlocker.label}
+                {topBlocker.note && (
+                  <span className="text-ink-subtle block text-xs">{topBlocker.note}</span>
+                )}
+              </span>
+            </div>
+            {remaining > 0 && (
+              <p className="text-ink-subtle text-xs">
+                {remaining} other prerequisite{remaining === 1 ? "" : "s"} outstanding.
+              </p>
+            )}
           </div>
+        ) : (
+          <p className="text-ink-muted text-sm">Every required prerequisite is complete.</p>
         )}
       </CardBody>
 
-      <CardFooter>
+      <CardFooter className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-ink-muted text-sm">
-          {deployment.status === "candidate" ? (
-            <>
-              Would start in {days} days{" "}
-              <span className="text-ink-subtle">if this option is selected.</span>
-            </>
-          ) : (
-            <>
-              {days > 0
-                ? `Starts in ${days} days.`
-                : days === 0
-                  ? "Starts today."
-                  : `Started ${Math.abs(days)} days ago.`}{" "}
-              <span className="text-ink-subtle">Deployment workspaces open in Phase 02.</span>
-            </>
-          )}
+          {deployment.status === "candidate"
+            ? `Would start in ${days} days if selected`
+            : days > 0
+              ? `Starts in ${days} days`
+              : days === 0
+                ? "Starts today"
+                : `Started ${Math.abs(days)} days ago`}
         </p>
+        <Link
+          href="/deployments"
+          className="text-link text-sm underline underline-offset-2"
+          aria-label={`Open deployments to see full detail for ${deployment.city}`}
+        >
+          Full detail
+        </Link>
       </CardFooter>
     </Card>
   );

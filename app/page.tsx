@@ -1,11 +1,10 @@
+import Link from "next/link";
 import { PageBody, PageHeader } from "@/components/layout/app-shell";
 import { DeploymentCard } from "@/components/patterns/deployment-card";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { DemoDataBanner } from "@/components/ui/demo-data-banner";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { Callout } from "@/components/ui/states";
 import { findPendingDecisions, findScheduleConflicts } from "@/features/deployments/decisions";
-import { NAV_SECTIONS, phaseLabel } from "@/features/navigation/nav-model";
 import { SEED_AS_OF, SEED_DEPLOYMENTS, SEPTEMBER_DECISION_INPUTS } from "@/lib/seed/deployments";
 
 export const metadata = {
@@ -30,29 +29,17 @@ export default function CommandCenterPage() {
 
   const decisions = findPendingDecisions(deployments, () => SEPTEMBER_DECISION_INPUTS);
   const conflicts = findScheduleConflicts(deployments);
-  const moduleCount = NAV_SECTIONS.reduce((total, section) => total + section.items.length, 0);
 
   return (
     <>
       <PageHeader
         title="Command Center"
         description="What matters now across every active deployment."
-        meta={
-          <p className="text-ink-subtle pt-1 font-mono text-xs">
-            {phaseLabel("00")} · showing state as of {SEED_AS_OF}
-          </p>
-        }
+        meta={<p className="text-ink-subtle pt-1 text-xs">State as of {SEED_AS_OF}</p>}
       />
 
       <PageBody>
         <DemoDataBanner />
-
-        <Callout title="This is a foundation, not a product.">
-          Phase 00 delivers the application shell, the design system, the testing and CI apparatus,
-          and this static proof of the information architecture. {moduleCount} modules are routed
-          and navigable, but none of them read or write data yet. Each one states the phase that
-          activates it.
-        </Callout>
 
         {decisions.map((decision) => (
           <Card as="section" key={decision.id} aria-labelledby={`decision-${decision.id}`}>
@@ -82,18 +69,26 @@ export default function CommandCenterPage() {
               {decision.outstandingInputs.length > 0 && (
                 <div className="space-y-2">
                   <h3 className="text-ink-muted text-xs font-medium tracking-wide uppercase">
-                    Waiting on
+                    Evidence needed before deciding
                   </h3>
                   <ul className="space-y-1.5">
                     {decision.outstandingInputs.map((input) => (
                       <li key={input} className="flex items-start gap-2 text-sm">
-                        <StatusBadge tone="neutral">Needed</StatusBadge>
+                        <StatusBadge tone="neutral">Missing</StatusBadge>
                         <span className="text-ink min-w-0 flex-1">{input}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
+
+              <p className="text-ink-subtle border-border border-t pt-3 text-xs">
+                Recording the decision — and moving the selected option into planning — happens in{" "}
+                <Link href="/deployments" className="text-link underline underline-offset-2">
+                  Deployments
+                </Link>
+                . That workflow is not built yet.
+              </p>
             </CardBody>
           </Card>
         ))}

@@ -29,10 +29,10 @@ test("the Command Center shows both demonstration deployments", async ({ page })
   await expect(page.getByRole("heading", { name: "Reykjavík" })).toBeVisible();
 });
 
-test("demonstration data is labelled and cannot be dismissed", async ({ page }) => {
+test("demonstration data is labeled and cannot be dismissed", async ({ page }) => {
   await page.goto("/");
 
-  const banner = page.getByText(/Demonstration data\./);
+  const banner = page.getByText(/demonstration data/i);
   await expect(banner).toBeVisible();
 
   // No control exists to hide the marker.
@@ -45,12 +45,26 @@ test("the Command Center leads with the open September decision", async ({ page 
   await expect(page.getByRole("heading", { name: "Decision required" })).toBeVisible();
   await expect(page.getByText(/mutually exclusive alternatives, not two trips/i)).toBeVisible();
   await expect(page.getByText(/Verified airfare and routing cost/i)).toBeVisible();
+
+  // C3: analytical framing, and a named future destination rather than a dead control.
+  await expect(page.getByText("Evidence needed before deciding")).toBeVisible();
+  await expect(page.getByText(/That workflow is not built yet/)).toBeVisible();
+});
+
+test("the Command Center carries no engineering status prose", async ({ page }) => {
+  await page.goto("/");
+
+  // C1/C2: build status belongs in documentation, not the operational screen.
+  await expect(page.getByText(/foundation, not a product/i)).toHaveCount(0);
+  await expect(page.getByText(/modules are routed and navigable/i)).toHaveCount(0);
+  await expect(page.getByText(/SCR-\d\d/)).toHaveCount(0);
 });
 
 test("candidate deployments are not presented as committed", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByText("Candidate — not selected yet")).toHaveCount(2);
+  await expect(page.getByText("Candidate", { exact: true })).toHaveCount(2);
+  await expect(page.getByText("Not selected yet")).toHaveCount(2);
   await expect(page.getByText(/^Starts in \d+ days\.$/)).toHaveCount(0);
 });
 

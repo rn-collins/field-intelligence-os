@@ -2,30 +2,33 @@ import { cn } from "@/lib/utils/cn";
 import { FlaskIcon } from "./icons";
 
 /**
- * Marks a surface as showing demonstration data.
+ * The preview notice.
  *
- * `AGENTS.md`: "Manhattan and Reykjavík records are demonstration/seed
- * deployments and must be clearly labeled."
+ * `AGENTS.md` requires demonstration records to be clearly labeled, and the
+ * difference between a real record and a sample one is the single most
+ * important thing on screen in an evidentiary system. So this is not
+ * dismissible: a marker the operator can turn off is one they will eventually
+ * turn off and then forget.
  *
- * Deliberately not dismissible and deliberately not styled like a status chip.
- * In a system whose purpose is evidentiary integrity, the difference between a
- * real record and a sample record is the single most important thing on screen,
- * and it must not be something the operator can turn off and later forget.
+ * Deliberately compact. An earlier revision paired this with a multi-sentence
+ * "this is a foundation, not a product" callout explaining routed-but-inert
+ * modules — engineering status addressed to the wrong audience, occupying the
+ * top of the operational screen. Build status belongs in documentation; the
+ * operator needs one line telling them nothing here is saved.
  */
-export function DemoDataBanner({ className, detail }: { className?: string; detail?: string }) {
+export function DemoDataBanner({ className }: { className?: string }) {
   return (
-    <div
+    <p
       className={cn(
-        "bg-demo-bg text-demo border-border-strong flex items-start gap-2.5 rounded-md border border-dashed px-4 py-3 text-sm",
+        "bg-preview-bg text-preview border-border-strong flex items-center gap-2 rounded-md border border-dashed px-3 py-2 text-xs",
         className,
       )}
     >
-      <FlaskIcon className="mt-0.5 shrink-0" />
-      <p>
-        <strong className="font-semibold">Demonstration data.</strong>{" "}
-        {detail ??
-          "These records are static Phase 00 samples, not live field records. Nothing here is stored, queried or synchronised."}
-      </p>
-    </div>
+      <FlaskIcon className="shrink-0" width={14} height={14} />
+      <span>
+        <strong className="font-semibold">Phase 00 preview</strong> · demonstration data · changes
+        are not saved
+      </span>
+    </p>
   );
 }

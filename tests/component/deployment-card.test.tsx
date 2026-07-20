@@ -15,12 +15,23 @@ describe("DeploymentCard", () => {
     expect(screen.getByRole("heading", { name: "Manhattan" })).toBeInTheDocument();
   });
 
-  it("shows the subject lanes", () => {
+  it("omits subject lanes from the summary but keeps them on the record", () => {
+    // C4: the Command Center card answers where/when/how-ready/what-is-stopping-it.
+    // Lanes belong to the Phase 02 detail page, not the home screen.
     render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
 
     for (const lane of manhattan.lanes) {
-      expect(screen.getByText(lane)).toBeInTheDocument();
+      expect(screen.queryByText(lane)).not.toBeInTheDocument();
     }
+
+    // Not deleted — still available for the detail view.
+    expect(manhattan.lanes.length).toBeGreaterThan(0);
+  });
+
+  it("omits the raw record identifier", () => {
+    render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
+
+    expect(screen.queryByText(manhattan.id)).not.toBeInTheDocument();
   });
 
   /**
@@ -28,34 +39,38 @@ describe("DeploymentCard", () => {
    * with no attached cause is the unactionable dashboard number that
    * docs/standards/UI_STANDARD.md rules out.
    */
-  it("lists every outstanding prerequisite alongside the score", () => {
+  it("surfaces the single biggest blocker, not the whole list", () => {
     render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
     const readiness = calculateReadiness(manhattan);
+    const [top, ...rest] = readiness.outstanding;
 
-    expect(readiness.outstanding.length).toBeGreaterThan(0);
-    for (const item of readiness.outstanding) {
-      expect(screen.getByText(item.label)).toBeInTheDocument();
+    // Worst-first ordering means the head of the list is what most likely
+    // stops the trip.
+    expect(screen.getByText(top!.label)).toBeInTheDocument();
+    for (const item of rest) {
+      expect(screen.queryByText(item.label)).not.toBeInTheDocument();
     }
+
+    // The rest are counted, so nothing is silently hidden.
+    expect(screen.getByText(new RegExp(`${rest.length} other prerequisite`))).toBeInTheDocument();
   });
 
-  it("explains why a blocked prerequisite is blocked", () => {
+  it("explains why the top blocker is blocked", () => {
     render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
-    const readiness = calculateReadiness(manhattan);
+    const top = calculateReadiness(manhattan).outstanding[0]!;
 
-    for (const item of readiness.blocked) {
-      expect(item.note).toBeDefined();
-      expect(screen.getByText(item.note!)).toBeInTheDocument();
-    }
+    expect(top.note).toBeDefined();
+    expect(screen.getByText(top.note!)).toBeInTheDocument();
   });
 
   it("renders a deterministic day count from the supplied reference date", () => {
     const committed = { ...manhattan, status: "planning" as const };
 
     const { rerender } = render(<DeploymentCard deployment={committed} asOf="2026-09-13" />);
-    expect(screen.getByText(/Starts in 7 days/)).toBeInTheDocument();
+    expect(screen.getByText("Starts in 7 days")).toBeInTheDocument();
 
     rerender(<DeploymentCard deployment={committed} asOf="2026-09-20" />);
-    expect(screen.getByText(/Starts today/)).toBeInTheDocument();
+    expect(screen.getByText("Starts today")).toBeInTheDocument();
   });
 
   /**
@@ -65,7 +80,9 @@ describe("DeploymentCard", () => {
    */
   it("renders the status from the record rather than assuming one", () => {
     const { rerender } = render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
-    expect(screen.getByText("Candidate — not selected yet")).toBeInTheDocument();
+    // C5: short badge, qualifier as supporting text.
+    expect(screen.getByText("Candidate")).toBeInTheDocument();
+    expect(screen.getByText("Not selected yet")).toBeInTheDocument();
     expect(screen.queryByText("Planning")).not.toBeInTheDocument();
 
     rerender(
@@ -78,20 +95,21 @@ describe("DeploymentCard", () => {
     render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
 
     // Not "starts in" — nothing starts until the option is selected.
-    expect(screen.getByText(/if this option is selected/)).toBeInTheDocument();
+    expect(screen.getByText(/if selected/)).toBeInTheDocument();
   });
 
-  it("states that deployment workspaces are not yet available for committed trips", () => {
-    render(<DeploymentCard deployment={{ ...manhattan, status: "planning" }} asOf={SEED_AS_OF} />);
+  it("offers a route to full detail rather than crowding the summary", () => {
+    render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
 
-    expect(screen.getByText(/Phase 02/)).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: /full detail for Manhattan/i });
+    expect(link).toHaveAttribute("href", "/deployments");
   });
 
-  it("renders no interactive controls, since none of them would work yet", () => {
+  it("renders no controls that do not work", () => {
+    // A disabled button implies the feature is one permission away from working.
     const { container } = render(<DeploymentCard deployment={manhattan} asOf={SEED_AS_OF} />);
 
     expect(within(container).queryByRole("button")).not.toBeInTheDocument();
-    expect(within(container).queryAllByRole("link")).toHaveLength(0);
   });
 });
 

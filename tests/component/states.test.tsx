@@ -83,6 +83,7 @@ describe("DemoDataBanner", () => {
     render(<DemoDataBanner />);
 
     expect(screen.getByText(/demonstration data/i)).toBeInTheDocument();
+    expect(screen.getByText(/Phase 00 preview/i)).toBeInTheDocument();
   });
 
   it("offers no way to dismiss it", () => {
@@ -93,10 +94,11 @@ describe("DemoDataBanner", () => {
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
-  it("accepts more specific detail", () => {
-    render(<DemoDataBanner detail="Two sample deployments." />);
+  it("states in one line that nothing is saved", () => {
+    // C1: the operator needs the fact, not an essay on build status.
+    render(<DemoDataBanner />);
 
-    expect(screen.getByText(/two sample deployments/i)).toBeInTheDocument();
+    expect(screen.getByText(/changes\s+are not saved/i)).toBeInTheDocument();
   });
 });
 
