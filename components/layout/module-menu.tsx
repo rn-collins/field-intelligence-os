@@ -22,6 +22,14 @@ import { cn } from "@/lib/utils/cn";
  *
  * Focus return to the trigger is the one piece `<dialog>` does not guarantee
  * across engines when closed programmatically, so it is handled explicitly.
+ *
+ * There is deliberately no backdrop-click-to-close. Attaching a click handler
+ * to the dialog element trips `jsx-a11y/click-events-have-key-events`, and the
+ * rule has a point: there is no meaningful key event for "the backdrop", so any
+ * paired handler would satisfy the linter while doing nothing for a keyboard
+ * user. Suppressing a correct accessibility rule to keep a pointer-only nicety
+ * is the wrong trade. Escape and the visible Close button both close the sheet
+ * and both return focus to the trigger; both are tested.
  */
 export function ModuleMenu({ label = "More" }: { label?: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -73,12 +81,6 @@ export function ModuleMenu({ label = "More" }: { label?: string }) {
         ref={dialogRef}
         aria-label="All modules"
         onClose={handleClose}
-        // Clicking the backdrop closes. The dialog element itself fills only
-        // part of the viewport, so a click landing on the element target rather
-        // than a child means the backdrop was hit.
-        onClick={(event) => {
-          if (event.target === dialogRef.current) close();
-        }}
         className={cn(
           "bg-surface text-ink m-0 mt-auto max-h-[85dvh] w-full max-w-none rounded-t-lg p-0",
           "backdrop:bg-ink/40",
