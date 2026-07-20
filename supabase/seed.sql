@@ -1,0 +1,2 @@
+-- Seed data will be added after the initial schema exists.
+-- Use only fictional or explicitly approved non-sensitive demonstration data.

@@ -1,0 +1,26 @@
+Event,Minimum payload
+DeploymentCreated,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+DeploymentActivated,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+TargetPrioritized,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+OutreachDraftCreated,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+InteractionScheduled,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+ConsentRecorded,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+InteractionStarted,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+InteractionClosed,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+CommitmentCreated,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+ClaimCaptured,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+EvidenceLinked,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+VerificationStatusChanged,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+SystemStepAdded,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+CognitionUpdated,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+AssetRegistered,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+AssetProtected,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+TranscriptCompleted,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+PermissionChanged,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+OutputSourceLocked,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+OutputPublished,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+CorrectionIssued,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+NotionSyncRequested,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+DriveSyncRequested,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+SyncConflictDetected,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata
+ExportCompleted,event_id; workspace_id; actor; occurred_at; entity; version; correlation_id; permitted metadata

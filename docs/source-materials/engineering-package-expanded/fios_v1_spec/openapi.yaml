@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: Field Intelligence OS API
+  version: 1.0.0
+  description: Canonical v1 API surface. Detailed JSON schemas are finalized during implementation from the product specification.
+servers:
+  - url: https://{host}/api/v1
+    variables:
+      host: { default: field-intelligence.example }
+security:
+  - bearerAuth: []
+paths:
+  /deployments:
+    get:
+      operationId: listDeployments
+      responses: { '200': { description: Deployment collection } }
+    post:
+      operationId: createDeployment
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema: { type: string }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/DeploymentCreate' } } }
+      responses: { '201': { description: Created } }
+  /deployments/{id}:
+    get:
+      operationId: getDeployment
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '200': { description: Deployment } }
+    patch:
+      operationId: updateDeployment
+      parameters: [ { $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/IfMatch' } ]
+      responses: { '200': { description: Updated } }
+  /interactions/{id}/consent:
+    post:
+      operationId: recordConsent
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '201': { description: Consent recorded } }
+  /claims:
+    post:
+      operationId: createClaim
+      responses: { '201': { description: Claim created } }
+  /claims/{id}/verify:
+    post:
+      operationId: verifyClaim
+      description: Human-authorized verification state transition.
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '200': { description: Verification updated } }
+  /assets/register:
+    post:
+      operationId: registerAsset
+      responses: { '201': { description: Asset registered } }
+  /search:
+    post:
+      operationId: hybridSearch
+      responses: { '200': { description: Authorized cited results } }
+  /sync/notion:
+    post:
+      operationId: runNotionSync
+      responses: { '202': { description: Sync queued } }
+  /sync/drive:
+    post:
+      operationId: runDriveSync
+      responses: { '202': { description: Sync queued } }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    IfMatch: { name: If-Match, in: header, required: true, schema: { type: string } }
+  schemas:
+    DeploymentCreate:
+      type: object
+      required: [name, code]
+      properties:
+        name: { type: string }
+        code: { type: string }
+        start_at: { type: string, format: date-time }
+        end_at: { type: string, format: date-time }
+        timezone: { type: string }
+        mission: { type: string }
+        provision_integrations:
+          type: object
+          properties:
+            drive: { type: boolean, default: true }
+            notion: { type: boolean, default: true }

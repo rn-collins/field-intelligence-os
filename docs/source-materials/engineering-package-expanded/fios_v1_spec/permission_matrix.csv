@@ -1,0 +1,13 @@
+Resource,Owner,Investigator,Editor,Researcher,Producer,Viewer
+Workspace settings,A,-,-,-,-,-
+Deployments/tasks,A,E,E,E,R,R
+People/relationships,A,E,E,E,R,R
+Restricted identities,A,R,R,-,-,-
+Interactions,A,E,E,E,R,R
+Consent/permissions,A,E,R,-,R,-
+Claims/evidence,A,E,E,E,R,R
+Verification decision,A,E,E,R,-,-
+Assets/ingest,A,E,R,-,E,-
+Outputs/drafts,A,E,E,R,R,R
+Publish/export,A,-,E,-,-,-
+Audit log,A,E,E,E,R,R

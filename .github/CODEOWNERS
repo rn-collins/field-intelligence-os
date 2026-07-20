@@ -1,0 +1,7 @@
+# Replace rn-collins with the exact GitHub username if different.
+* @rn-collins
+/supabase/ @rn-collins
+/.github/ @rn-collins
+/SECURITY.md @rn-collins
+/ARCHITECTURE.md @rn-collins
+/docs/decisions/ @rn-collins
