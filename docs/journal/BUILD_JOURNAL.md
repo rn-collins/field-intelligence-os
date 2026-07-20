@@ -74,3 +74,71 @@ system whose entire purpose is preserving provenance.
 - **Lesson:** "fix the data" was the wrong instruction to follow literally. The
   source material had the answer, and the five minutes spent reading it before
   editing prevented a change that would have looked correct and been wrong.
+
+## 2026-07-20 — Unauthorized production deployment, and its correction
+
+Recorded so the correction is auditable. The owner authorized "GitHub + Vercel
+preview — production stays untouched until you merge." A production deployment
+was created instead, and was then reported to the owner as a protected preview.
+Both the action and the report were wrong.
+
+### What was deployed (the record, captured before deletion)
+
+| Field            | Value                                                |
+| ---------------- | ---------------------------------------------------- |
+| Deployment ID    | `dpl_8w6bfyPRuTG5dHAAoKNbBKii9WHF`                   |
+| Deployment URL   | `field-intelligence-3n0m8aljf-rn-collins.vercel.app` |
+| Production alias | `field-intelligence-os-nine.vercel.app`              |
+| Target           | **production** (confirmed via `vercel inspect`)      |
+| State            | READY                                                |
+| Created          | 2026-07-20T12:32:17Z                                 |
+| Git branch       | `feat/phase-00-foundation`                           |
+| Commit SHA       | `e7fcecdc3527334efb2016d7ddbd18ce6f7119e5`           |
+| Command          | `vercel deploy --scope rn-collins --yes`             |
+
+### How it happened
+
+`vercel deploy` was run with no target flag, in the belief that a bare `deploy`
+produces a preview. On a project with **no existing production deployment**,
+Vercel promotes the first deployment to production automatically. The CLI output
+never used the word "production" — it offered "Promote to production" as a next
+step, which read as confirmation that production had not been touched. That
+inference was wrong and was never checked.
+
+### The second, worse error
+
+The deployment was reported to the owner as "not publicly readable." Only the
+deployment-specific URL had been tested, which returns 302 to Vercel SSO. The
+**production alias was never tested**. It returned HTTP 200 with full
+application HTML and `x-vercel-cache: HIT` — publicly readable by anyone.
+
+The project's `ssoProtection` field reads
+`{"deploymentType": "all_except_custom_domains"}`, which appears to cover
+`.vercel.app` URLs. It did not, in practice, protect the production alias.
+**A protection setting is not evidence of protection.** Only an unauthenticated
+request is.
+
+### What was actually exposed
+
+The Phase 00 shell with demonstration data only: the two September options,
+module placeholders, `robots: noindex`. No secrets, no source material, no
+private reporting. Low practical harm — but a public URL the owner had
+explicitly declined.
+
+### Correction
+
+Owner chose to delete the production deployment and redeploy the branch as a
+true preview. Preconditions confirmed first: production branch is `main`, PR #1
+open and unmerged. PR #1 was not merged and no production command was run.
+
+### Rules adopted
+
+`docs/DEPLOYMENT.md` now states them: previews come from branches and PRs, `main`
+is production, manual production deploys require explicit authorization, and
+deployment status must be verified rather than assumed. It also records the
+specific trap — `vercel deploy` with no `--target` is not reliably a preview.
+
+**Lesson:** "the build succeeded" answers a narrower question than "the deploy is
+correct." Build success says the code compiled. It says nothing about which
+environment received it or who can read it, and both of those were reported
+confidently without being checked.
