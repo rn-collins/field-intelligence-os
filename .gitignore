@@ -18,3 +18,4 @@ secrets/
 next-env.d.ts
 .turbo/
 *.tsbuildinfo
+.vercel
