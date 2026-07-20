@@ -73,5 +73,14 @@ and unrecoverable — nothing breaks, the key simply becomes public.
   `docs/standards/CODING_STANDARD.md`.
 - The absence of a component library is a debt to be paid deliberately in
   Phase 02, not a permanent position.
-- Node 22 is pinned via `.nvmrc` and `engines`; CI reads the same file, so the
-  local and CI toolchains cannot drift.
+- **Toolchain policy (amended after audit).** Node 22 is the *primary* version:
+  `.nvmrc` declares it and CI reads that same file. `engines` permits `>=22 <25`
+  because the code is verified to work on Node 24 and forbidding it would be
+  dishonest. `packageManager` pins the exact npm that generated the lockfile.
+
+  An earlier revision of this ADR claimed local and CI toolchains "cannot
+  drift." That was false — Phase 00 was verified locally on Node 24.16.0 while
+  CI pinned 22. They *can* drift within the supported range. The honest control
+  is not a claim but a record: `scripts/verify-phase-00.sh` writes the exact
+  node and npm version into every verification artifact, so each result states
+  which toolchain produced it.

@@ -24,23 +24,43 @@ targets production, unless the product owner has explicitly authorized that
 specific deployment. "Deploy it" is not authorization for a production deploy;
 ask.
 
-**Note the trap that caused this rule.** On a project with **no existing
-production deployment**, Vercel promotes the next deployment to production
-regardless of how it was created — including `vercel deploy --target=preview`
-and including a Git-integration build from a non-`main` branch. The CLI reports
-success without ever using the word "production".
+### 3a. The first-deployment bootstrap trap
 
-This was verified the hard way: three consecutive deployments were forced to
-production, and `--target=preview` only began to be honoured once a production
-deployment already existed.
+**On a project with zero production deployments, Vercel promotes the next
+deployment to production — regardless of the requested target or the source
+branch.** This overrides `--target=preview`, and it overrides
+`productionBranch: main`. The CLI reports success without ever printing the word
+"production".
+
+Verified the hard way: three consecutive deployments were forced to production,
+including a Git-integration build from `feat/phase-00-foundation` while
+`productionBranch` was correctly set to `main`. `--target=preview` was only
+honored once a production deployment already existed.
 
 ```bash
-vercel deploy --target=preview     # honoured ONLY if a production deploy exists
+vercel deploy --target=preview     # honored ONLY once a production deploy exists
 ```
 
-The practical consequence: **do not delete every deployment from a project.**
-Doing so recreates the no-production state, and the next deployment — whatever
-its stated target — becomes production again.
+So the rule is **not** simply "always pass `--target=preview`". That flag is
+necessary and insufficient.
+
+### 3b. Never delete the last production deployment to "clear" production
+
+This is the trap's sharp edge, and it is counter-intuitive enough to state
+plainly: deleting deployments to remove something from production **recreates
+the zero-production state**, which guarantees the _next_ deployment — whatever
+its stated target — is promoted to production.
+
+During the incident this turned one mistake into three: each deletion re-armed
+the condition that caused the next failure. The deletions were causing the
+failure they were meant to correct.
+
+If production is serving something it should not:
+
+- **Do** deploy the correct commit to production, with owner authorization, so
+  the alias moves.
+- **Do** enable Deployment Protection to close public access.
+- **Do not** delete the last production deployment as a workaround.
 
 ### 4. Deployment status must be **verified**, never assumed
 
@@ -48,20 +68,35 @@ Before reporting a deployment as successful, safe, or private, check it. A build
 that returns "Ready" tells you the build compiled — nothing about where it went
 or who can read it.
 
-Minimum verification:
+Use the script rather than remembering the commands:
 
 ```bash
-# Where did it actually go?
-vercel inspect <url> --scope <scope> | grep -i target
-
-# What does an unauthenticated visitor get?
-curl -sI <url> | head -1
-curl -s <url> | grep -qi "<known app string>" && echo "PUBLIC" || echo "protected"
+scripts/verify-deployment.sh \
+  --preview <preview-host> \
+  --production-alias <project>.vercel.app \
+  --scope <scope>
 ```
 
-Check the **production alias** (`<project>.vercel.app`), not only the
-deployment-specific URL. They can differ: a deployment-specific URL may redirect
-to SSO while the alias serves the application publicly from edge cache.
+It checks four things and exits non-zero if any fail:
+
+1. **Deployment target** — `vercel inspect`; a branch build reporting
+   `production` is a failure.
+2. **Project production branch** — must be `main`.
+3. **Preview access** — an unauthenticated request must _not_ receive HTTP 200.
+4. **Production alias** — expected inactive (HTTP 404) unless
+   `--expect-alias-active` is passed.
+
+The script is **read-only by construction**: it runs only `vercel inspect`,
+read-only API GETs and `curl`. `tests/unit/deployment-script.test.ts` asserts
+that no `deploy`, `promote`, `remove`, `alias`, `rollback` or `--prod` appears in
+it, because the moment a verification tool can also mutate, it becomes dangerous
+in precisely the situation it exists to make safe.
+
+Always check the **production alias** (`<project>.vercel.app`), not only the
+deployment-specific URL. They differ: during the incident the deployment URL
+returned 302 to SSO while the alias served the application publicly with
+`x-vercel-cache: HIT`. Checking only the first produced a confident, wrong
+"it is protected" report.
 
 ## Environments
 
