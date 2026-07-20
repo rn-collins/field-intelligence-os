@@ -24,14 +24,23 @@ targets production, unless the product owner has explicitly authorized that
 specific deployment. "Deploy it" is not authorization for a production deploy;
 ask.
 
-**Note the trap that caused this rule.** `vercel deploy` with no target flag is
-not reliably a preview: on a project with no existing production deployment, it
-creates one, and the CLI reports success without ever using the word
-"production". Always pass the target explicitly:
+**Note the trap that caused this rule.** On a project with **no existing
+production deployment**, Vercel promotes the next deployment to production
+regardless of how it was created — including `vercel deploy --target=preview`
+and including a Git-integration build from a non-`main` branch. The CLI reports
+success without ever using the word "production".
+
+This was verified the hard way: three consecutive deployments were forced to
+production, and `--target=preview` only began to be honoured once a production
+deployment already existed.
 
 ```bash
-vercel deploy --target=preview     # correct for any branch work
+vercel deploy --target=preview     # honoured ONLY if a production deploy exists
 ```
+
+The practical consequence: **do not delete every deployment from a project.**
+Doing so recreates the no-production state, and the next deployment — whatever
+its stated target — becomes production again.
 
 ### 4. Deployment status must be **verified**, never assumed
 

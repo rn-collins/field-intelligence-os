@@ -142,3 +142,41 @@ specific trap — `vercel deploy` with no `--target` is not reliably a preview.
 correct." Build success says the code compiled. It says nothing about which
 environment received it or who can read it, and both of those were reported
 confidently without being checked.
+
+## 2026-07-20 — Correction to preview: the real Vercel mechanism
+
+The correction above did not work on the first two attempts, which is itself
+worth recording.
+
+`vercel deploy --target=preview` produced `target: production`. So did a
+Git-integration build triggered by pushing `feat/phase-00-foundation`, despite
+`link.productionBranch` being `main`. Three deployments in a row were forced to
+production.
+
+**Cause: Vercel promotes the next deployment to production whenever a project has
+no production deployment — regardless of the requested target or source branch.**
+Each deletion returned the project to zero deployments, which recreated the
+condition and guaranteed the next attempt would also become production. The
+deletions were causing the failure they were meant to correct.
+
+Confirmed by experiment: with a production deployment present,
+`vercel deploy --target=preview` returned `target: preview` immediately.
+
+### Final state
+
+| Item             | Value                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| Deleted          | `dpl_8w6bfyPRuTG5dHAAoKNbBKii9WHF` (`field-intelligence-3n0m8aljf`), target production |
+| Deleted          | `field-intelligence-dza1bd2q9`, target production (`--target=preview`, not honoured)   |
+| Deleted          | `field-intelligence-qffcdhoqa`, target production (Git integration, branch build)      |
+| Active preview   | `https://field-intelligence-fdpp4e2b2-rn-collins.vercel.app`                           |
+| Preview target   | `preview` (verified via `vercel inspect`)                                              |
+| Branch / SHA     | `feat/phase-00-foundation` @ `d48535f`                                                 |
+| Preview access   | HTTP 302 → Vercel SSO; no application content unauthenticated                          |
+| Production alias | `field-intelligence-os-nine.vercel.app` → HTTP 404, no active deployment               |
+| PR #1            | open, unmerged                                                                         |
+
+**Lesson:** each attempted fix was verified only after the fact, and twice the
+verification contradicted the report that had already been given. Verifying
+before reporting would have caught all three. That is now rule 4 in
+`docs/DEPLOYMENT.md`.
