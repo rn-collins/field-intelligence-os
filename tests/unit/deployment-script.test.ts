@@ -24,12 +24,18 @@ describe("verify-deployment.sh is read-only", () => {
     "vercel env add",
     "vercel env rm",
     "vercel link",
-    "--prod",
     "git push",
   ];
 
   it.each(MUTATING)("contains no %s", (verb) => {
     expect(source).not.toContain(verb);
+  });
+
+  it("contains no --prod flag", () => {
+    // Word-boundary matched, not substring: the script legitimately accepts
+    // `--production-alias`, which contains "--prod". A naive `toContain` check
+    // flagged that as a mutating flag.
+    expect(source).not.toMatch(/--prod\b/);
   });
 
   it("uses only read-only vercel subcommands", () => {
@@ -48,7 +54,6 @@ describe("verify-deployment.sh is read-only", () => {
   });
 
   it("is executable", () => {
-    // eslint-disable-next-line no-bitwise
     expect(statSync(join(ROOT, SCRIPT)).mode & 0o111).toBeGreaterThan(0);
   });
 
