@@ -37,6 +37,18 @@ All notable changes to Field Intelligence OS are documented here. Format follows
   cancellation and job timeouts.
 - `docs/build/ROADMAP.md` reconciled with `docs/BUILD_ORDER.md`.
 
+### Fixed
+
+- **Competing September deployments were modelled as two committed trips.**
+  `PROJECT_MEMORY.md` listed Manhattan and Reykjavík as "first live deployments"
+  with overlapping dates; the owner's planning workbook records them as mutually
+  exclusive candidates for a single window with the decision still open. Added
+  `candidate` and `not-selected` statuses, declared mutual exclusion on the
+  record, and separated an open decision from a scheduling conflict — the two
+  look identical in the data and mean opposite things.
+- `DeploymentCard` hard-coded its status badge to "Planning", asserting a
+  commitment that had not been made. Status now renders from the record.
+
 ### Security
 
 - Supabase service-role key confined to a single `server-only` module, enforced
