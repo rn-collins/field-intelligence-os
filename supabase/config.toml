@@ -1,0 +1,59 @@
+#
+# Supabase local development configuration.
+#
+# Local-only. Contains no secrets and must never contain any: production
+# credentials live in the Vercel and Supabase secret stores.
+#
+# Phase 00 defines no schema. This file exists so that `npm run db:start`
+# works from a fresh clone and Phase 01 begins from a reviewed configuration.
+#
+
+project_id = "field-intelligence-os"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+# API_STANDARD.md: "Paginate collection endpoints and bound search results."
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[db.pooler]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+
+# Local email testing. No mail leaves the machine.
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+# Media masters live in Google Drive (ADR-003), not Supabase Storage. Storage
+# is enabled only for derived artefacts such as proxies and thumbnails.
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+# Phase 01 decides the real signup policy. Deny-by-default until then.
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+enable_confirmations = true
+
+[analytics]
+enabled = false
