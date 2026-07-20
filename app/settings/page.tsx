@@ -8,12 +8,15 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/settings"
-      willContain={[
-        "Workspace, profile and role administration",
-        "Google Drive and Notion connection state",
-        "AI and transcription provider configuration",
-        "Controlled vocabularies and retention rules",
-        "Audit log and sync conflict resolution",
+      purpose={
+        "Administer the workspace — who has access, which integrations are connected, and what the audit trail shows — without exposing secrets."
+      }
+      caption={"How the workspace is governed"}
+      chain={[
+        { label: "Workspace", holds: "profile and members" },
+        { label: "Roles", holds: "who may do what" },
+        { label: "Integrations", holds: "Drive, Notion, AI" },
+        { label: "Security", holds: "audit log, retention" },
       ]}
     />
   );

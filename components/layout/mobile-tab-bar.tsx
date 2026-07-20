@@ -41,14 +41,17 @@ export function MobileTabBar() {
                 {...(active ? { "aria-current": "page" as const } : {})}
                 className={cn(
                   "flex h-14 flex-col items-center justify-center gap-1 px-1 text-center text-[0.6875rem] leading-tight",
-                  active ? "text-accent font-semibold" : "text-ink-muted",
+                  active ? "text-nav-active font-semibold" : "text-ink-muted",
                 )}
               >
                 {item.field && <FieldIcon width={18} height={18} />}
                 <span className="truncate">{item.label}</span>
                 <span
                   aria-hidden="true"
-                  className={cn("h-0.5 w-6 rounded-full", active ? "bg-accent" : "bg-transparent")}
+                  className={cn(
+                    "h-0.5 w-6 rounded-full",
+                    active ? "bg-nav-active" : "bg-transparent",
+                  )}
                 />
               </Link>
             </li>

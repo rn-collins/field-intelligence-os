@@ -8,12 +8,15 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/library"
-      willContain={[
-        "The Field Investigation Manual, inside the product",
-        "Capture taxonomy and domain fieldbooks",
-        "Consent card language, with version history",
-        "Standards, and the records governed by each version",
-        "Superseded rules, kept readable rather than deleted",
+      purpose={
+        "Keep the method inside the product: the manual, the capture cards, the consent language, and which version governed a given record."
+      }
+      caption={"How the method stays current"}
+      chain={[
+        { label: "Manual", holds: "the method itself" },
+        { label: "Field cards", holds: "what to capture" },
+        { label: "Standards", holds: "the governing rule" },
+        { label: "Version history", holds: "what applied when" },
       ]}
     />
   );

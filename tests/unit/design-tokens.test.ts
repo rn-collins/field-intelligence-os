@@ -72,10 +72,28 @@ const TEXT_PAIRS: ReadonlyArray<readonly [string, string]> = [
   ["ink-subtle", "surface-sunken"],
   ["ink-subtle", "surface-raised"],
   ["ink-muted", "surface-raised"],
-  ["accent", "surface-sunken"],
-  ["accent", "canvas"],
-  ["accent", "surface"],
-  ["accent-contrast", "accent"],
+  // Semantic roles (F1). Each is checked on every surface it can sit on;
+  // splitting one token into seven is only safe if all seven are validated.
+  ["action", "canvas"],
+  ["action", "surface"],
+  ["action", "surface-sunken"],
+  ["action-contrast", "action"],
+  ["link", "canvas"],
+  ["link", "surface"],
+  ["link", "surface-sunken"],
+  ["nav-active", "canvas"],
+  ["nav-active", "surface"],
+  ["nav-active", "surface-sunken"],
+  ["attention", "canvas"],
+  ["attention", "surface"],
+  ["attention", "surface-sunken"],
+  ["sync-ok", "surface"],
+  ["sync-pending", "surface"],
+  ["sync-offline", "surface"],
+  ["sync-conflict", "surface"],
+  ["preview", "preview-bg"],
+  ["preview", "surface"],
+  ["preview", "canvas"],
   ["status-verified", "status-verified-bg"],
   ["status-pending", "status-pending-bg"],
   ["status-disputed", "status-disputed-bg"],
@@ -121,7 +139,18 @@ describe.each(SCHEMES)("%s scheme", (_scheme, tokens) => {
   });
 
   it("defines a dark override for every surface and text token", () => {
-    for (const name of ["canvas", "surface", "surface-sunken", "ink", "ink-muted", "accent"]) {
+    for (const name of [
+      "canvas",
+      "surface",
+      "surface-sunken",
+      "ink",
+      "ink-muted",
+      "action",
+      "link",
+      "nav-active",
+      "attention",
+      "preview",
+    ]) {
       expect(tokens[`--color-${name}`]).toMatch(/^#[0-9a-f]{6}$/i);
     }
   });

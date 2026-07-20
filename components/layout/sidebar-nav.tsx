@@ -37,7 +37,7 @@ export function SidebarNav({ className }: { className?: string }) {
                       className={cn(
                         "block rounded-md border-l-2 py-1.5 pr-3 pl-2.5 text-sm transition-colors",
                         active
-                          ? "border-l-accent bg-surface-sunken text-ink font-semibold"
+                          ? "border-l-nav-active bg-surface-sunken text-ink font-semibold"
                           : "text-ink-muted hover:bg-surface-sunken hover:text-ink border-l-transparent",
                       )}
                     >

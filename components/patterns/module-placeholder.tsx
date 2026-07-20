@@ -1,28 +1,35 @@
 import { PageBody, PageHeader } from "@/components/layout/app-shell";
-import { StatusBadge } from "@/components/ui/status-badge";
-import { EmptyState } from "@/components/ui/states";
-import { findNavItem, phaseLabel } from "@/features/navigation/nav-model";
+import { PreviewBadge } from "@/components/ui/preview-badge";
+import { findNavItem } from "@/features/navigation/nav-model";
+import { StructurePreview, type StructureNode } from "./structure-preview";
 
 /**
- * The honest empty state for a module that does not exist yet.
+ * A module that is designed but not yet active.
  *
- * `docs/build/PHASE-00-CODEX-FOUNDATION.md` requires "purposeful empty states"
- * and forbids pretending to be a finished product. So a placeholder says three
- * things and nothing more: what this module is for, which phase builds it, and
- * what it will contain. No disabled buttons, no skeleton rows, no sample
- * records — a greyed-out control implies the feature is one permission away
- * from working, which would be a lie.
+ * Three rules, each fixing a defect found in audit:
  *
- * Copy is read from `features/navigation/nav-model.ts`, so a module's stated
- * purpose and its navigation entry cannot drift apart.
+ * 1. **No fake data.** The module shows its record *structure*, never sample
+ *    records. See `StructurePreview`.
+ * 2. **No fake controls.** A disabled "New person" button implies the feature is
+ *    one permission away from working, which is a lie.
+ * 3. **No engineering metadata in the product UI.** Phase numbers and SCR
+ *    identifiers describe the build, not the user's work. They are emitted as
+ *    `data-*` attributes for the developer route and tests to read, and are no
+ *    longer rendered as user-facing text.
  */
 export function ModulePlaceholder({
   href,
-  willContain,
+  purpose,
+  caption,
+  chain,
 }: {
   href: string;
-  /** The records this module will hold, in the operator's language. */
-  willContain: readonly string[];
+  /** What this module will let the user do, in their language. */
+  purpose: string;
+  /** One line describing the structure diagram. */
+  caption: string;
+  /** The record types this module connects. */
+  chain: readonly StructureNode[];
 }) {
   const item = findNavItem(href);
 
@@ -33,43 +40,31 @@ export function ModulePlaceholder({
   }
 
   return (
-    <>
+    <div data-module={href} data-activates-in={item.activatesIn} data-screen-id={item.screenId}>
       <PageHeader
         title={item.label}
         description={item.summary}
         meta={
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <StatusBadge tone="pending">Not yet built</StatusBadge>
-            <span className="text-ink-subtle font-mono text-xs">
-              {phaseLabel(item.activatesIn)} · {item.screenId}
-            </span>
+          <div className="pt-1">
+            <PreviewBadge>Not built yet</PreviewBadge>
           </div>
         }
       />
 
       <PageBody>
-        <EmptyState
-          title="This module activates in a later phase."
-          description={
-            <div className="space-y-3">
-              <p>
-                Phase 00 establishes the foundation only: the shell, the design system, the testing
-                and CI apparatus, and a static Command Center that proves the information
-                architecture. This route exists so that structure is visible and navigable now,
-                rather than appearing later as a surprise.
-              </p>
-              <div>
-                <p className="text-ink font-medium">When built, this module will hold:</p>
-                <ul className="mt-1.5 list-disc space-y-1 pl-5">
-                  {willContain.map((entry) => (
-                    <li key={entry}>{entry}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          }
-        />
+        <div className="border-border bg-surface space-y-6 rounded-lg border border-dashed px-5 py-6">
+          <div className="space-y-1.5">
+            <h2 className="text-ink text-base font-semibold">What this will do</h2>
+            <p className="text-ink-muted max-w-prose text-sm leading-relaxed">{purpose}</p>
+          </div>
+
+          <StructurePreview caption={caption} chain={chain} />
+
+          <p className="text-ink-subtle text-xs">
+            Preview only. This workflow is not active yet, and nothing here is saved.
+          </p>
+        </div>
       </PageBody>
-    </>
+    </div>
   );
 }

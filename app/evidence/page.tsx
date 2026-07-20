@@ -8,12 +8,15 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/evidence"
-      willContain={[
-        "Documents, datasets, records and published sources",
-        "Laws and policies with jurisdiction and effective dates",
-        "Method, population, comparator and metric where applicable",
-        "Stated limitations and fitness for a specific purpose",
-        "Superseding versions that never overwrite the original",
+      purpose={
+        "Store what a claim rests on — documents, data, records, statutes — with the limits of each source recorded alongside it."
+      }
+      caption={"How a source is evaluated"}
+      chain={[
+        { label: "Source", holds: "document, dataset, statute" },
+        { label: "Authority", holds: "jurisdiction, effective dates" },
+        { label: "Limitation", holds: "what it cannot show" },
+        { label: "Linked claim", holds: "what it supports" },
       ]}
     />
   );

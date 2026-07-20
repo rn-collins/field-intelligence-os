@@ -10,6 +10,7 @@ import type {
 } from "@/features/deployments/types";
 import { Card, CardBody, CardFooter, CardHeader } from "@/components/ui/card";
 import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
+import type { HeadingLevel } from "@/components/ui/states";
 import { ReadinessMeter } from "./readiness-meter";
 
 const STATUS_TONE: Record<PrerequisiteStatus, StatusTone> = {
@@ -74,7 +75,21 @@ function formatRange(deployment: Deployment): string {
  * requires that "no count is displayed without queryable underlying records",
  * and a Phase 00 shell is exactly where that discipline is easiest to abandon.
  */
-export function DeploymentCard({ deployment, asOf }: { deployment: Deployment; asOf: string }) {
+export function DeploymentCard({
+  deployment,
+  asOf,
+  headingLevel = 3,
+}: {
+  deployment: Deployment;
+  asOf: string;
+  /**
+   * The card's title level. Configurable so the card can sit under a page `h1`
+   * (level 2) or inside a titled section (level 3+) without skipping a level.
+   */
+  headingLevel?: HeadingLevel;
+}) {
+  const Heading = `h${headingLevel}` as const;
+  const SubHeading = `h${Math.min(headingLevel + 1, 6) as HeadingLevel}` as const;
   const readiness = calculateReadiness(deployment);
   const days = daysUntilStart(deployment, asOf);
   const duration = durationInDays(deployment);
@@ -84,7 +99,9 @@ export function DeploymentCard({ deployment, asOf }: { deployment: Deployment; a
       <CardHeader className="space-y-2">
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
           <div className="space-y-0.5">
-            <h3 className="text-ink text-lg font-semibold tracking-tight">{deployment.city}</h3>
+            <Heading className="text-ink text-lg font-semibold tracking-tight">
+              {deployment.city}
+            </Heading>
             <p className="text-ink-muted text-sm">
               {formatRange(deployment)} · {duration} days
             </p>
@@ -117,9 +134,9 @@ export function DeploymentCard({ deployment, asOf }: { deployment: Deployment; a
 
         {readiness.outstanding.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-ink-muted text-xs font-medium tracking-wide uppercase">
+            <SubHeading className="text-ink-muted text-xs font-medium tracking-wide uppercase">
               Outstanding prerequisites
-            </h4>
+            </SubHeading>
             <ul className="space-y-2">
               {readiness.outstanding.map((item) => (
                 <li key={item.id} className="flex flex-wrap items-start gap-2 text-sm">

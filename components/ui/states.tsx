@@ -1,24 +1,41 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils/cn";
-import { AlertIcon, CircleIcon, DisputedIcon, LockIcon } from "./icons";
+import { AlertIcon, CheckIcon, CircleIcon, DisputedIcon, LockIcon } from "./icons";
 
 /**
  * The five states every feature must implement, per
  * `docs/standards/UI_STANDARD.md`: loading, empty, error, restricted, success.
  *
  * They live together in one file because they are one design decision, not
- * four. Each carries a heading, an explanation, and — where the user can act —
- * exactly one next step. "Restricted" is a first-class state rather than a
- * variant of "error": being denied access to a protected record is correct
- * system behaviour, and telling the user their permissions are broken would be
- * both wrong and, in a source-protection context, actively misleading.
+ * five. Each carries a heading, an explanation, and — where the user can act —
+ * exactly one next step.
+ *
+ * "Restricted" is a first-class state rather than a variant of "error": being
+ * denied access to a protected record is correct system behavior, and telling
+ * the user their permissions are broken would be both wrong and, in a
+ * source-protection context, actively misleading.
+ *
+ * The full taxonomy, including states that are specified but not yet built
+ * (offline, syncing, queued, sync conflict), is in `docs/ux/STATE_TAXONOMY.md`.
  */
+
+/**
+ * Heading level for the state's title.
+ *
+ * Configurable because these blocks appear at different depths: directly under
+ * a page `h1` (needs `h2`), or inside a titled card (needs `h3` or lower). A
+ * hard-coded `h3` produced a skipped level wherever the surrounding context did
+ * not happen to match, which is a real screen-reader navigation defect rather
+ * than a cosmetic one. Default stays `3` so existing call sites are unchanged.
+ */
+export type HeadingLevel = 2 | 3 | 4 | 5 | 6;
 
 type StateBlockProps = {
   title: string;
   description: ReactNode;
   action?: ReactNode;
   className?: string;
+  headingLevel?: HeadingLevel;
 };
 
 function StateBlock({
@@ -29,7 +46,10 @@ function StateBlock({
   action,
   className,
   role,
+  headingLevel = 3,
 }: StateBlockProps & { icon: ReactNode; iconClassName?: string; role?: "status" | "alert" }) {
+  const Heading = `h${headingLevel}` as const;
+
   return (
     <div
       {...(role ? { role } : {})}
@@ -40,7 +60,7 @@ function StateBlock({
     >
       <span className={cn("shrink-0", iconClassName)}>{icon}</span>
       <div className="space-y-1.5">
-        <h3 className="text-ink text-base font-semibold">{title}</h3>
+        <Heading className="text-ink text-base font-semibold">{title}</Heading>
         <div className="text-ink-muted max-w-prose text-sm leading-relaxed">{description}</div>
       </div>
       {action}
@@ -86,6 +106,25 @@ export function RestrictedState(props: StateBlockProps) {
   );
 }
 
+/**
+ * Confirms a completed action.
+ *
+ * `role="status"` rather than `alert`: success is not urgent and should not
+ * interrupt a screen reader mid-sentence. The check icon plus the heading text
+ * carry the meaning, so the state survives greyscale — success and error must
+ * never be distinguishable by color alone.
+ */
+export function SuccessState(props: StateBlockProps) {
+  return (
+    <StateBlock
+      role="status"
+      icon={<CheckIcon width={20} height={20} />}
+      iconClassName="text-status-verified"
+      {...props}
+    />
+  );
+}
+
 export function LoadingState({ label = "Loading" }: { label?: string }) {
   return (
     <div
@@ -93,7 +132,7 @@ export function LoadingState({ label = "Loading" }: { label?: string }) {
       aria-live="polite"
       className="border-border bg-surface flex items-center gap-3 rounded-lg border px-5 py-8"
     >
-      <span className="border-border-strong border-t-accent h-4 w-4 animate-spin rounded-full border-2" />
+      <span className="border-border-strong border-t-action h-4 w-4 animate-spin rounded-full border-2" />
       <span className="text-ink-muted text-sm">{label}…</span>
     </div>
   );
@@ -116,7 +155,7 @@ export function Callout({
         className,
       )}
     >
-      <AlertIcon className="text-accent mt-0.5 shrink-0" />
+      <AlertIcon className="text-attention mt-0.5 shrink-0" />
       <div className="space-y-1 text-sm">
         <p className="text-ink font-semibold">{title}</p>
         <div className="text-ink-muted leading-relaxed">{children}</div>

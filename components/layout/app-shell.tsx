@@ -16,7 +16,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-dvh">
       <a
         href="#main"
-        className="sr-only-focusable bg-accent text-accent-contrast focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        className="sr-only-focusable bg-action text-action-contrast focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
       >
         Skip to main content
       </a>
@@ -28,9 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <span className="text-ink block text-sm font-semibold tracking-tight">
                 Field Intelligence OS
               </span>
-              <span className="text-ink-subtle block font-mono text-[0.6875rem]">
-                Phase 00 · foundation
-              </span>
+              <span className="text-ink-subtle block text-[0.6875rem]">Preview</span>
             </Link>
           </div>
 
@@ -43,7 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               href="/field"
               className="border-border hover:bg-surface-sunken text-ink flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium"
             >
-              <FieldIcon className="text-accent" />
+              <FieldIcon className="text-action" />
               Field Mode
             </Link>
           </div>
@@ -54,7 +52,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link href="/" className="text-ink text-sm font-semibold tracking-tight">
             Field Intelligence OS
           </Link>
-          <span className="text-ink-subtle font-mono text-[0.6875rem]">Phase 00</span>
+          <span className="text-ink-subtle text-[0.6875rem]">Preview</span>
         </div>
 
         <main id="main" tabIndex={-1} className="min-w-0 flex-1 pb-20 lg:pb-0">

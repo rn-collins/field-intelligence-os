@@ -35,10 +35,33 @@
   --color-ink-subtle: #63686d;
   --color-ink-inverse: #faf8f5;
 
-  /* Accent — reserved for "needs attention". Not decorative. */
-  --color-accent: #8a4b08;
-  --color-accent-hover: #6d3b06;
-  --color-accent-contrast: #ffffff;
+  /*
+   * Semantic roles.
+   *
+   * A single accent token previously carried primary action, links, active
+   * navigation and pending status at once. That made "this is clickable",
+   * "you are here" and "this needs a decision" visually identical, so the
+   * interface could not distinguish them even though the product depends on
+   * exactly that distinction. Each role now owns a token and can diverge
+   * without a rewrite.
+   */
+  --color-action: #8a4b08;
+  --color-action-hover: #6d3b06;
+  --color-action-contrast: #ffffff;
+
+  --color-link: #1c5d99;
+  --color-nav-active: #8a4b08;
+  --color-attention: #8a4b08;
+
+  /* Sync state — distinct from record state (F2). */
+  --color-sync-ok: #1f6b3f;
+  --color-sync-pending: #8a4b08;
+  --color-sync-offline: #4b5157;
+  --color-sync-conflict: #a3242b;
+
+  /* Product-development / preview state. Never a record status. */
+  --color-preview: #3f4a52;
+  --color-preview-bg: #e7ecef;
 
   /* Status — verification, consent and restriction states */
   --color-status-verified: #1f6b3f;
@@ -91,9 +114,21 @@
     --color-ink-subtle: #949aa2;
     --color-ink-inverse: #14161a;
 
-    --color-accent: #e9a23b;
-    --color-accent-hover: #f2b95c;
-    --color-accent-contrast: #14161a;
+    --color-action: #e9a23b;
+    --color-action-hover: #f2b95c;
+    --color-action-contrast: #14161a;
+
+    --color-link: #7fb3e8;
+    --color-nav-active: #e9a23b;
+    --color-attention: #e9a23b;
+
+    --color-sync-ok: #6cc38d;
+    --color-sync-pending: #e9a23b;
+    --color-sync-offline: #b0b6bd;
+    --color-sync-conflict: #f08a90;
+
+    --color-preview: #b3bcc4;
+    --color-preview-bg: #1e2429;
 
     --color-status-verified: #6cc38d;
     --color-status-verified-bg: #16291f;
@@ -130,9 +165,20 @@
   --color-ink-subtle: var(--color-ink-subtle);
   --color-ink-inverse: var(--color-ink-inverse);
 
-  --color-accent: var(--color-accent);
-  --color-accent-hover: var(--color-accent-hover);
-  --color-accent-contrast: var(--color-accent-contrast);
+  --color-action: var(--color-action);
+  --color-action-hover: var(--color-action-hover);
+  --color-action-contrast: var(--color-action-contrast);
+  --color-link: var(--color-link);
+  --color-nav-active: var(--color-nav-active);
+  --color-attention: var(--color-attention);
+
+  --color-sync-ok: var(--color-sync-ok);
+  --color-sync-pending: var(--color-sync-pending);
+  --color-sync-offline: var(--color-sync-offline);
+  --color-sync-conflict: var(--color-sync-conflict);
+
+  --color-preview: var(--color-preview);
+  --color-preview-bg: var(--color-preview-bg);
 
   --color-status-verified: var(--color-status-verified);
   --color-status-verified-bg: var(--color-status-verified-bg);
@@ -181,10 +227,16 @@
    * `:focus-visible` rather than `:focus` so pointer users are not punished,
    * but keyboard users always know where they are.
    */
+  /*
+   * Outline only. An earlier revision also forced `border-radius: var(--radius-sm)`
+   * here, which reshaped every focused element — a circular icon button became a
+   * rounded square while focused, which is exactly when the control should look
+   * most like itself. Radius belongs to component geometry; focus supplies the
+   * ring and nothing else.
+   */
   :focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
-    border-radius: var(--radius-sm);
   }
 
   /* Record identifiers are always monospace — they are data, not prose. */

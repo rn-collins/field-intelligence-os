@@ -22,7 +22,7 @@ export function ReadinessMeter({
     ? "bg-status-verified"
     : blocked.length > 0
       ? "bg-status-disputed"
-      : "bg-accent";
+      : "bg-attention";
 
   const summary = `${completed} of ${requiredTotal} required prerequisites complete (${percentage}%)`;
 

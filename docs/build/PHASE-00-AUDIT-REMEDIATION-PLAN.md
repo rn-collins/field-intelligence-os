@@ -59,11 +59,11 @@ zsh variant of A1 indefinitely.
 
 ## 1. How this plan classifies work
 
-| Class | Meaning |
-|---|---|
-| **R** | Required in this remediation |
+| Class | Meaning                                                       |
+| ----- | ------------------------------------------------------------- |
+| **R** | Required in this remediation                                  |
 | **D** | Deliberately deferred to Phase 01+, documented with rationale |
-| **N** | Will not change; rationale recorded |
+| **N** | Will not change; rationale recorded                           |
 
 The audit repeatedly distinguishes "build it" from "specify it precisely."
 Parts D2, D3, F5, F7 and most of A7 are explicitly documentation deliverables;
@@ -74,16 +74,16 @@ to begin Phase 01.
 
 ## 2. Part A — engineering, security, CI, deployment
 
-| ID | Class | Files | Tests |
-|---|---|---|---|
-| A1 | R | `tests/unit/security-boundaries.test.ts` | rewrite scanner; add nested-detection proof |
-| A2 | R | same | add explicit skip/fail behaviour test |
-| A3 | R | `docs/DEPLOYMENT.md`, `scripts/verify-deployment.sh` (new) | shellcheck-clean; no mutation |
-| A4 | R | `docs/build/PHASE-00-COMPLETION-REPORT.md`, `scripts/verify-phase-00.sh` (new) | n/a |
-| A5 | R | `.nvmrc`, `package.json`, `README.md`, `CONTRIBUTING.md`, `.github/workflows/ci.yml` | n/a |
-| A6 | R | `scripts/db-test.sh`, `supabase/tests/README.md`, `README.md` | n/a |
-| A7 | R (config + docs) | `.github/dependabot.yml`, `.github/workflows/codeql.yml`, `docs/public-release/` | n/a |
-| A8 | R (docs only) | `docs/public-release/SOURCE_MATERIAL_CLASSIFICATION.md` | n/a |
+| ID  | Class             | Files                                                                                | Tests                                       |
+| --- | ----------------- | ------------------------------------------------------------------------------------ | ------------------------------------------- |
+| A1  | R                 | `tests/unit/security-boundaries.test.ts`                                             | rewrite scanner; add nested-detection proof |
+| A2  | R                 | same                                                                                 | add explicit skip/fail behaviour test       |
+| A3  | R                 | `docs/DEPLOYMENT.md`, `scripts/verify-deployment.sh` (new)                           | shellcheck-clean; no mutation               |
+| A4  | R                 | `docs/build/PHASE-00-COMPLETION-REPORT.md`, `scripts/verify-phase-00.sh` (new)       | n/a                                         |
+| A5  | R                 | `.nvmrc`, `package.json`, `README.md`, `CONTRIBUTING.md`, `.github/workflows/ci.yml` | n/a                                         |
+| A6  | R                 | `scripts/db-test.sh`, `supabase/tests/README.md`, `README.md`                        | n/a                                         |
+| A7  | R (config + docs) | `.github/dependabot.yml`, `.github/workflows/codeql.yml`, `docs/public-release/`     | n/a                                         |
+| A8  | R (docs only)     | `docs/public-release/SOURCE_MATERIAL_CLASSIFICATION.md`                              | n/a                                         |
 
 ### A1 — recursive, shell-free scanning
 
@@ -175,7 +175,7 @@ Policy to adopt and document:
 `npm run db:test` exits 0 with no schema, which reads as a pass.
 
 - Exit code **0 with an explicit `SKIPPED (not applicable — Phase 00 defines no
-  schema)`** marker, and emit `status=skipped` for the verification artifact.
+schema)`** marker, and emit `status=skipped` for the verification artifact.
 - Add the Phase 01 tripwire: if `supabase/migrations/*.sql` exists and
   `supabase/tests/*.test.sql` does not, **exit 1** with an explanatory message.
   This makes "schema without tests" a build failure the moment Phase 01 begins.
@@ -204,11 +204,11 @@ rewrite now. Cross-linked from `OPEN_QUESTIONS.md` #15, which remains the blocke
 
 ## 3. Part B — mobile navigation
 
-| ID | Class | Files |
-|---|---|---|
-| B1 | R | `features/navigation/nav-model.ts`, `components/layout/mobile-tab-bar.tsx`, `components/layout/module-menu.tsx` (new) |
-| B2 | R | same |
-| B3 | R | `tests/e2e/responsive.spec.ts` (new), `playwright.config.ts` |
+| ID  | Class | Files                                                                                                                 |
+| --- | ----- | --------------------------------------------------------------------------------------------------------------------- |
+| B1  | R     | `features/navigation/nav-model.ts`, `components/layout/mobile-tab-bar.tsx`, `components/layout/module-menu.tsx` (new) |
+| B2  | R     | same                                                                                                                  |
+| B3  | R     | `tests/e2e/responsive.spec.ts` (new), `playwright.config.ts`                                                          |
 
 Target IA: **Home · Deployments · Capture · Search · More**, with Capture routing
 to `/field`, satisfying B2's one-tap requirement.
@@ -233,17 +233,17 @@ Widths to verify: 320, 360, 390, 430; plus 200% zoom.
 
 ## 4. Part C — Command Center
 
-| ID | Class | Files |
-|---|---|---|
-| C1 | R | `app/page.tsx`, `components/ui/demo-data-banner.tsx` |
-| C2 | R | `components/patterns/module-placeholder.tsx`, `app/page.tsx`, `app/field/page.tsx`, `features/navigation/nav-model.ts`, `app/_dev/page.tsx` (new) |
-| C3 | R | `app/page.tsx` |
-| C4 | R | `components/patterns/deployment-card.tsx` |
-| C5 | R | `components/patterns/deployment-card.tsx` |
+| ID  | Class | Files                                                                                                                                             |
+| --- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C1  | R     | `app/page.tsx`, `components/ui/demo-data-banner.tsx`                                                                                              |
+| C2  | R     | `components/patterns/module-placeholder.tsx`, `app/page.tsx`, `app/field/page.tsx`, `features/navigation/nav-model.ts`, `app/_dev/page.tsx` (new) |
+| C3  | R     | `app/page.tsx`                                                                                                                                    |
+| C4  | R     | `components/patterns/deployment-card.tsx`                                                                                                         |
+| C5  | R     | `components/patterns/deployment-card.tsx`                                                                                                         |
 
 - **C1/C2** — replace the verbose "foundation, not a product" callout and phase
-  metadata with the compact non-dismissible notice: *"Phase 00 preview ·
-  demonstration data · changes are not saved."* SCR identifiers and phase numbers
+  metadata with the compact non-dismissible notice: _"Phase 00 preview ·
+  demonstration data · changes are not saved."_ SCR identifiers and phase numbers
   move to `data-*` attributes plus a dev-only route (`/_dev`, excluded from
   navigation and from the nav-model route tests' user-facing assertions).
   Engineering status prose moves to documentation.
@@ -262,13 +262,13 @@ Widths to verify: 320, 360, 390, 430; plus 200% zoom.
 
 ## 5. Part D — Field Mode
 
-| ID | Class | Files |
-|---|---|---|
-| D1 | R | `app/field/page.tsx` |
-| D2 | **D** (spec only) | `docs/phases/PHASE-04-MINIMUM-CAPTURE-PACKAGE.md` (new) |
-| D3 | **D** (ADR only) | `docs/decisions/ADR-007-field-mode-interaction-shell.md` (new) |
-| D4 | R (docs) + partial UI ordering | `app/field/page.tsx`, ADR-007 |
-| D5 | R | `docs/standards/COPY_STANDARD.md` (new) + copy sweep |
+| ID  | Class                          | Files                                                          |
+| --- | ------------------------------ | -------------------------------------------------------------- |
+| D1  | R                              | `app/field/page.tsx`                                           |
+| D2  | **D** (spec only)              | `docs/phases/PHASE-04-MINIMUM-CAPTURE-PACKAGE.md` (new)        |
+| D3  | **D** (ADR only)               | `docs/decisions/ADR-007-field-mode-interaction-shell.md` (new) |
+| D4  | R (docs) + partial UI ordering | `app/field/page.tsx`, ADR-007                                  |
+| D5  | R                              | `docs/standards/COPY_STANDARD.md` (new) + copy sweep           |
 
 - **D1** — the current heading "The minimum capture package" is inaccurate; it
   lists quick record types. Rename to **"Quick capture record types."**
@@ -297,11 +297,11 @@ Widths to verify: 320, 360, 390, 430; plus 200% zoom.
 
 ## 6. Part E — placeholders and IA
 
-| ID | Class | Files |
-|---|---|---|
-| E1 | R | `components/patterns/module-placeholder.tsx`, `components/patterns/structure-preview.tsx` (new), 12 route files |
-| E2 | R | same |
-| E3 | R (decision record only) | `docs/build/OPEN_QUESTIONS.md`, ADR note |
+| ID  | Class                    | Files                                                                                                           |
+| --- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| E1  | R                        | `components/patterns/module-placeholder.tsx`, `components/patterns/structure-preview.tsx` (new), 12 route files |
+| E2  | R                        | same                                                                                                            |
+| E3  | R (decision record only) | `docs/build/OPEN_QUESTIONS.md`, ADR note                                                                        |
 
 - **E1** — each module renders an abstract **structure diagram** (labelled nodes
   and relationships from the audit's list), not fake records. Implemented as a
@@ -309,8 +309,8 @@ Widths to verify: 320, 360, 390, 430; plus 200% zoom.
   it cannot accidentally render person-like data. No synthetic people, emails,
   claims, evidence or activity.
 - **E2** — "This module activates in a later phase" → user-centered description
-  of the capability, plus the compact note *"Preview only. This workflow is not
-  active yet."*
+  of the capability, plus the compact note _"Preview only. This workflow is not
+  active yet."_
 - **E3** — no renames performed. Four naming questions (Command Center; Interactions;
   Evidence & law as one module; Media & assets) recorded as an open question with
   arguments on each side. Renaming routes now would contradict ADR-005, which was
@@ -320,15 +320,15 @@ Widths to verify: 320, 360, 390, 430; plus 200% zoom.
 
 ## 7. Part F — design system
 
-| ID | Class | Files |
-|---|---|---|
-| F1 | R | `app/globals.css`, all components using `accent`, `tests/unit/design-tokens.test.ts` |
-| F2 | R | `components/ui/status-badge.tsx`, new preview badge |
-| F3 | R | `components/ui/states.tsx`, `tests/component/states.test.tsx` |
-| F4 | R | `components/ui/states.tsx`, `components/patterns/*`, tests |
-| F5 | **D** (doc only) | `docs/design/VISUAL_LANGUAGE.md` (new) |
-| F6 | R | `app/globals.css` |
-| F7 | **D** (doc only) | `docs/design/VISUAL_LANGUAGE.md`, ADR note |
+| ID  | Class            | Files                                                                                |
+| --- | ---------------- | ------------------------------------------------------------------------------------ |
+| F1  | R                | `app/globals.css`, all components using `accent`, `tests/unit/design-tokens.test.ts` |
+| F2  | R                | `components/ui/status-badge.tsx`, new preview badge                                  |
+| F3  | R                | `components/ui/states.tsx`, `tests/component/states.test.tsx`                        |
+| F4  | R                | `components/ui/states.tsx`, `components/patterns/*`, tests                           |
+| F5  | **D** (doc only) | `docs/design/VISUAL_LANGUAGE.md` (new)                                               |
+| F6  | R                | `app/globals.css`                                                                    |
+| F7  | **D** (doc only) | `docs/design/VISUAL_LANGUAGE.md`, ADR note                                           |
 
 - **F1** — split the single `--color-accent` into `--color-action`,
   `--color-link`, `--color-nav-active`, `--color-attention`, plus existing status
@@ -353,11 +353,11 @@ Widths to verify: 320, 360, 390, 430; plus 200% zoom.
 
 ## 8. Part G — states
 
-| ID | Class | Files |
-|---|---|---|
-| G1 | R | `app/error.tsx`, `app/not-found.tsx`, `components/ui/states.tsx` |
-| G2 | R | `docs/ux/STATE_TAXONOMY.md` (new) |
-| G3 | R | `tests/component/states.test.tsx`, `tests/e2e/*` |
+| ID  | Class | Files                                                            |
+| --- | ----- | ---------------------------------------------------------------- |
+| G1  | R     | `app/error.tsx`, `app/not-found.tsx`, `components/ui/states.tsx` |
+| G2  | R     | `docs/ux/STATE_TAXONOMY.md` (new)                                |
+| G3  | R     | `tests/component/states.test.tsx`, `tests/e2e/*`                 |
 
 G1 review points: 404 keeps navigation and offers a safe destination (already
 true — verify); global error exposes only `error.digest`, never a stack (already
@@ -389,15 +389,15 @@ they require Phase 04 sync to be meaningful.
 
 ## 10. What will not change, and why
 
-| Item | Rationale |
-|---|---|
-| Route vocabulary (ADR-005) | Ratified 2026-07-19. E3 asks for evaluation and explicit decisions, not renames. Changing ratified URLs without new evidence is churn. |
-| `candidate` / `not-selected` statuses | Correct per the September decision record; already recorded as OPEN_QUESTIONS #13. |
-| Seed data content | Public facts only; strategy deliberately excluded and test-enforced. No change needed. |
-| No component library | ADR-006 stands. B1 is satisfied with the native `<dialog>` element rather than a dependency. |
-| Deployment state | No production deployment created; existing valid preview not deleted; PR #1 not merged. |
-| `docs/source-materials/` contents | A8 classifies; it does not delete or rewrite history. |
-| Canonical governance files | `AGENTS.md`, `START_HERE.md`, ADRs 001–004 unchanged except where a finding requires it. |
+| Item                                  | Rationale                                                                                                                              |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Route vocabulary (ADR-005)            | Ratified 2026-07-19. E3 asks for evaluation and explicit decisions, not renames. Changing ratified URLs without new evidence is churn. |
+| `candidate` / `not-selected` statuses | Correct per the September decision record; already recorded as OPEN_QUESTIONS #13.                                                     |
+| Seed data content                     | Public facts only; strategy deliberately excluded and test-enforced. No change needed.                                                 |
+| No component library                  | ADR-006 stands. B1 is satisfied with the native `<dialog>` element rather than a dependency.                                           |
+| Deployment state                      | No production deployment created; existing valid preview not deleted; PR #1 not merged.                                                |
+| `docs/source-materials/` contents     | A8 classifies; it does not delete or rewrite history.                                                                                  |
+| Canonical governance files            | `AGENTS.md`, `START_HERE.md`, ADRs 001–004 unchanged except where a finding requires it.                                               |
 
 ---
 
@@ -419,11 +419,11 @@ they require Phase 04 sync to be meaningful.
 
 ## 12. Risks
 
-| Risk | Mitigation |
-|---|---|
-| Scope is large; partial completion could leave the UI inconsistent | Execute in the substrate-first order above; each step ends green |
-| Native `<dialog>` styling/behaviour differences across engines | e2e coverage at four widths + keyboard/Escape/focus-return assertions |
-| Token split (F1) touches every component | Mechanical rename with a lint-visible token list; contrast test extended before components change |
-| Heading-level configurability (F4) could silently break hierarchy | Per-route heading-order assertions, not just component unit tests |
-| Copy sweep (D5) could alter quoted source material | Sweep excludes `docs/source-materials/` and quoted text; diff reviewed per file |
-| Pushing triggers an unintended deployment | Bootstrap condition no longer applies (a preview exists); expected result is a **preview**, verified after push per Part J |
+| Risk                                                               | Mitigation                                                                                                                 |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Scope is large; partial completion could leave the UI inconsistent | Execute in the substrate-first order above; each step ends green                                                           |
+| Native `<dialog>` styling/behaviour differences across engines     | e2e coverage at four widths + keyboard/Escape/focus-return assertions                                                      |
+| Token split (F1) touches every component                           | Mechanical rename with a lint-visible token list; contrast test extended before components change                          |
+| Heading-level configurability (F4) could silently break hierarchy  | Per-route heading-order assertions, not just component unit tests                                                          |
+| Copy sweep (D5) could alter quoted source material                 | Sweep excludes `docs/source-materials/` and quoted text; diff reviewed per file                                            |
+| Pushing triggers an unintended deployment                          | Bootstrap condition no longer applies (a preview exists); expected result is a **preview**, verified after push per Part J |

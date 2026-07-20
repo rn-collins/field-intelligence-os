@@ -8,12 +8,16 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/systems"
-      willContain={[
-        "Reconstructed workflows as a graph of steps and actors",
-        "Decision rules, inputs, outputs and handoffs",
-        "Observed steps rendered distinctly from claimed steps",
-        "Exceptions, failure modes and repair paths",
-        "Comparison across jurisdictions and across time",
+      purpose={
+        "Reconstruct how something actually works — who decides, under which rule, what happens at each handoff, and where it fails."
+      }
+      caption={"How a system is reconstructed"}
+      chain={[
+        { label: "Actors", holds: "who acts" },
+        { label: "Rules", holds: "what governs them" },
+        { label: "Handoffs", holds: "where control moves" },
+        { label: "Exceptions", holds: "where it deviates" },
+        { label: "Consequences", holds: "who is affected" },
       ]}
     />
   );

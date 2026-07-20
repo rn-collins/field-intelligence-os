@@ -54,11 +54,39 @@ test("candidate deployments are not presented as committed", async ({ page }) =>
   await expect(page.getByText(/^Starts in \d+ days\.$/)).toHaveCount(0);
 });
 
-test("module placeholders name the phase that activates them", async ({ page }) => {
+test("module placeholders describe the capability without engineering metadata", async ({
+  page,
+}) => {
   await page.goto("/claims");
 
-  await expect(page.getByText("Not yet built")).toBeVisible();
-  await expect(page.getByText(/Phase 05/)).toBeVisible();
+  await expect(page.getByText("Not built yet")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What this will do" })).toBeVisible();
+  await expect(page.getByText(/Preview only\. This workflow is not active yet/)).toBeVisible();
+
+  // C2: phase numbers and screen IDs are build metadata, not user-facing text.
+  await expect(page.getByText(/Phase 0\d/)).toHaveCount(0);
+  await expect(page.getByText(/SCR-\d\d/)).toHaveCount(0);
+});
+
+test("module placeholders keep build metadata in data attributes", async ({ page }) => {
+  await page.goto("/claims");
+
+  const root = page.locator("[data-module='/claims']");
+  await expect(root).toHaveAttribute("data-activates-in", "05");
+  await expect(root).toHaveAttribute("data-screen-id", "SCR-07");
+});
+
+test("module placeholders show structure, never sample records", async ({ page }) => {
+  await page.goto("/people");
+
+  // Record types, not instances. Scoped to the diagram: the module summary
+  // legitimately mentions the same words in prose.
+  const diagram = page.getByRole("figure");
+  await expect(diagram.getByText("Person", { exact: true })).toBeVisible();
+  await expect(diagram.getByText("Relationship history", { exact: true })).toBeVisible();
+
+  // Nothing that looks like a real source.
+  await expect(page.getByText(/@[a-z]+\.[a-z]{2,}/i)).toHaveCount(0);
 });
 
 test("an unknown route renders the not-found state", async ({ page }) => {

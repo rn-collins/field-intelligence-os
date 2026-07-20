@@ -8,12 +8,16 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/search"
-      willContain={[
-        "Retrieval across structured, textual, graph and geographic records",
-        "Permission-aware results that filter before retrieval, not after",
-        "Why each result matched, with source excerpts",
-        "A research canvas for pinning and comparing sources",
-        "Saved queries and exportable source sets",
+      purpose={
+        "Find anything across the whole record — by word, by connection, by place, by time — without ever surfacing what you are not cleared to see."
+      }
+      caption={"How retrieval is scoped"}
+      chain={[
+        { label: "Query", holds: "words or question" },
+        { label: "Permissions", holds: "applied before retrieval" },
+        { label: "Graph and place", holds: "connections, geography" },
+        { label: "Time", holds: "when it was true" },
+        { label: "Source set", holds: "exportable, cited" },
       ]}
     />
   );

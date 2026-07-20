@@ -8,12 +8,15 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/outputs"
-      willContain={[
-        "Articles, films, photo essays, podcasts, courses and presentations",
-        "A locked source set for each output",
-        "Which claims and assets are cleared for use",
-        "Fact-check, legal and editorial review states",
-        "Versions, publication records and corrections",
+      purpose={
+        "Turn a locked set of sources into something publishable, with every claim and asset cleared before it ships."
+      }
+      caption={"How an output reaches publication"}
+      chain={[
+        { label: "Source lock", holds: "fixed set of records" },
+        { label: "Assembly", holds: "structure and draft" },
+        { label: "Review", holds: "fact, legal, editorial" },
+        { label: "Publication", holds: "versions and corrections" },
       ]}
     />
   );

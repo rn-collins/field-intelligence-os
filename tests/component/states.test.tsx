@@ -1,12 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { DemoDataBanner } from "@/components/ui/demo-data-banner";
+import { PreviewBadge } from "@/components/ui/preview-badge";
 import {
   Callout,
   EmptyState,
   ErrorState,
   LoadingState,
   RestrictedState,
+  SuccessState,
 } from "@/components/ui/states";
 
 describe("EmptyState", () => {
@@ -95,5 +97,98 @@ describe("DemoDataBanner", () => {
     render(<DemoDataBanner detail="Two sample deployments." />);
 
     expect(screen.getByText(/two sample deployments/i)).toBeInTheDocument();
+  });
+});
+
+describe("SuccessState", () => {
+  it("renders a heading and description", () => {
+    render(<SuccessState title="Record saved" description="Your changes are stored." />);
+
+    expect(screen.getByRole("heading", { name: "Record saved" })).toBeInTheDocument();
+    expect(screen.getByText("Your changes are stored.")).toBeInTheDocument();
+  });
+
+  it("announces politely rather than as an alert", () => {
+    // Success is not urgent; it must not interrupt a screen reader mid-sentence.
+    render(<SuccessState title="Saved" description="Done." />);
+
+    expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("carries an icon so it is distinguishable without color", () => {
+    const { container } = render(<SuccessState title="Saved" description="Done." />);
+
+    expect(container.querySelector("svg")).not.toBeNull();
+  });
+
+  it("renders an optional next action", () => {
+    render(
+      <SuccessState
+        title="Saved"
+        description="Done."
+        action={<button type="button">View record</button>}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "View record" })).toBeInTheDocument();
+  });
+});
+
+describe("configurable heading level", () => {
+  /**
+   * A hard-coded h3 skips a level wherever the surrounding context does not
+   * happen to match — a real screen-reader navigation defect, not a cosmetic one.
+   */
+  it("defaults to h3, preserving existing call sites", () => {
+    render(<EmptyState title="Nothing" description="None." />);
+
+    expect(screen.getByRole("heading", { level: 3, name: "Nothing" })).toBeInTheDocument();
+  });
+
+  it.each([2, 4, 5, 6] as const)("renders at level %s when asked", (level) => {
+    render(<EmptyState title="Nothing" description="None." headingLevel={level} />);
+
+    expect(screen.getByRole("heading", { level, name: "Nothing" })).toBeInTheDocument();
+  });
+
+  it("applies to every state variant", () => {
+    const { rerender } = render(<SuccessState title="S" description="d" headingLevel={2} />);
+    expect(screen.getByRole("heading", { level: 2, name: "S" })).toBeInTheDocument();
+
+    rerender(<RestrictedState title="R" description="d" headingLevel={4} />);
+    expect(screen.getByRole("heading", { level: 4, name: "R" })).toBeInTheDocument();
+
+    rerender(<ErrorState title="E" description="d" headingLevel={5} />);
+    expect(screen.getByRole("heading", { level: 5, name: "E" })).toBeInTheDocument();
+  });
+});
+
+describe("PreviewBadge", () => {
+  /**
+   * Product-preview state is not a record status. An earlier revision rendered
+   * "Not yet built" with the `pending` tone, which in this product means a
+   * record awaiting a decision — so a reader could not tell whether the data or
+   * the software was incomplete.
+   */
+  it("renders its label with an icon", () => {
+    const { container } = render(<PreviewBadge>Not built yet</PreviewBadge>);
+
+    expect(screen.getByText("Not built yet")).toBeInTheDocument();
+    expect(container.querySelector("svg")).not.toBeNull();
+  });
+
+  it("defaults to a preview label", () => {
+    render(<PreviewBadge />);
+
+    expect(screen.getByText("Preview")).toBeInTheDocument();
+  });
+
+  it("does not use record-status tokens", () => {
+    const { container } = render(<PreviewBadge />);
+    const el = container.firstElementChild as HTMLElement;
+
+    expect(el.className).toContain("preview");
+    expect(el.className).not.toMatch(/status-(pending|verified|disputed|restricted)/);
   });
 });

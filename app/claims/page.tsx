@@ -8,12 +8,15 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/claims"
-      willContain={[
-        "One exact assertion per record, stored in its original wording",
-        "Claimant, context, time and claim type",
-        "Supporting and challenging evidence, held separately",
-        "Verification status with a full audited history",
-        "Which outputs a claim is permitted to appear in",
+      purpose={
+        "Hold one exact assertion per record, in its original wording, kept separate from whatever supports or challenges it."
+      }
+      caption={"How a claim earns its status"}
+      chain={[
+        { label: "Exact assertion", holds: "original wording" },
+        { label: "Claimant", holds: "who, when, context" },
+        { label: "Support and challenge", holds: "evidence both ways" },
+        { label: "Verification", holds: "audited status history" },
       ]}
     />
   );

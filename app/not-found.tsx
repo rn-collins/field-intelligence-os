@@ -16,7 +16,7 @@ export default function NotFound() {
           description={
             <p>
               The route may belong to a module that has not been built yet. The{" "}
-              <Link href="/" className="text-accent underline underline-offset-2">
+              <Link href="/" className="text-link underline underline-offset-2">
                 Command Center
               </Link>{" "}
               lists every module that currently exists.

@@ -8,12 +8,16 @@ export default function Page() {
   return (
     <ModulePlaceholder
       href="/interactions"
-      willContain={[
-        "Scheduled and spontaneous interactions with sources",
-        "Ground rules and versioned consent records",
-        "Question trees and live timestamped notes",
-        "On-record and off-record segment boundaries",
-        "Promises made, and the cognition update afterwards",
+      purpose={
+        "Prepare, run and close a conversation with a source — with consent recorded before anything else, and the questions it raised captured before you forget them."
+      }
+      caption={"How an interaction is conducted"}
+      chain={[
+        { label: "Preparation", holds: "questions, context" },
+        { label: "Consent", holds: "versioned, before recording" },
+        { label: "Recording", holds: "on and off record" },
+        { label: "Transcript", holds: "exact wording preserved" },
+        { label: "Follow-up", holds: "promises, next source" },
       ]}
     />
   );

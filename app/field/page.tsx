@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageBody, PageHeader } from "@/components/layout/app-shell";
 import { Card, CardBody } from "@/components/ui/card";
 import { FieldIcon } from "@/components/ui/icons";
-import { StatusBadge } from "@/components/ui/status-badge";
+import { PreviewBadge } from "@/components/ui/preview-badge";
 import { Callout, EmptyState } from "@/components/ui/states";
 import { phaseLabel } from "@/features/navigation/nav-model";
 
@@ -44,7 +44,7 @@ export default function FieldModePage() {
         description="One-handed capture, built for limited connectivity and very little time."
         meta={
           <div className="flex flex-wrap items-center gap-2 pt-1">
-            <StatusBadge tone="pending">Not yet built</StatusBadge>
+            <PreviewBadge>Not built yet</PreviewBadge>
             <span className="text-ink-subtle font-mono text-xs">{phaseLabel("04")} · SCR-04</span>
           </div>
         }
@@ -59,7 +59,7 @@ export default function FieldModePage() {
         <Card>
           <CardBody className="space-y-5">
             <div className="flex items-center gap-3">
-              <span className="bg-surface-sunken text-accent border-border flex h-11 w-11 items-center justify-center rounded-md border">
+              <span className="bg-surface-sunken text-action border-border flex h-11 w-11 items-center justify-center rounded-md border">
                 <FieldIcon width={20} height={20} />
               </span>
               <div>
@@ -92,7 +92,7 @@ export default function FieldModePage() {
               </p>
               <p>
                 Until then, the{" "}
-                <Link href="/" className="text-accent underline underline-offset-2">
+                <Link href="/" className="text-link underline underline-offset-2">
                   Command Center
                 </Link>{" "}
                 shows the deployment state that Field Mode will operate against.
