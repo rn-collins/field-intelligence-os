@@ -72,6 +72,7 @@ db_out="$(bash scripts/db-test.sh 2>&1)"
 case "$db_out" in
   *DB_TEST_STATUS=passed*) db_st="pass" ;;
   *DB_TEST_STATUS=skipped*) db_st="skipped" ;;
+  *DB_TEST_STATUS=unrun*) db_st="unrun" ;;
   *) db_st="fail" ;;
 esac
 append_check db "$db_st" "$(printf '%s' "$db_out" | grep -v DB_TEST_STATUS | head -1)"
