@@ -34,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Fails the build on a high or critical advisory. Currently zero, so this
+      # is a tripwire rather than a gate that is already red.
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+
       - name: Format check
         run: npm run format:check
 
