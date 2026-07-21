@@ -1,5 +1,13 @@
 # Phase 00 — Completion Report
 
+> **Updated after audit remediation (commit `004d2ec`+).** Test totals are no
+> longer restated in prose; they are generated into
+> `docs/build/verification/latest.json` by `scripts/verify-phase-00.sh`, so they
+> cannot drift. As of the latest run: **245 unit/component, 130 e2e, build pass,
+> db skipped**, on Node v24.16.0 (local). CI runs the same checks on Node 22.
+> Full finding-by-finding results are in
+> `docs/build/PHASE-00-AUDIT-REMEDIATION-REPORT.md`.
+
 - Date: 2026-07-19
 - Branch: `feat/phase-00-foundation`
 - Plan: `docs/build/PHASE-00-IMPLEMENTATION-PLAN.md`

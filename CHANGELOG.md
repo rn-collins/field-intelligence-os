@@ -5,6 +5,28 @@ All notable changes to Field Intelligence OS are documented here. Format follows
 
 ## [Unreleased]
 
+### Audit remediation (Phase 00)
+
+- **Security**: the service-role scanner was recursive-blind — it checked 4 of
+  22 `.ts` files, missing `lib/supabase/server.ts` itself. Rewritten shell-free
+  and mutation-verified; git failures now fail loudly instead of passing.
+- **Mobile**: all 13 modules are reachable in two taps via a native `<dialog>`
+  "More" sheet; eight were previously unreachable on a phone. Responsive tests
+  at 320–430px, landscape, tablet and 200% zoom; fixed a real zoom-reflow bug.
+- **Command Center**: leads with the decision; compact preview notice; summary
+  cards with a route to full detail; engineering metadata moved off the UI.
+- **Design system**: one accent token split into seven semantic roles
+  (100 contrast assertions); added `SuccessState`; configurable heading levels;
+  focus outline no longer reshapes controls.
+- **Field Mode**: corrected "minimum capture package" terminology; specified the
+  real package and the distinct interaction shell (ADR-007) for a later release.
+- **Deployment**: documented the first-deployment bootstrap trap and added a
+  read-only `verify-deployment.sh`.
+- **Honesty**: `db:test` reports SKIPPED not pass; toolchain claims corrected;
+  verification results generated into an artifact rather than hand-copied.
+- Added Dependabot, CodeQL, `npm audit` in CI, a state taxonomy, a source-material
+  classification, and a copy standard (U.S. English).
+
 ### Added — Phase 00, production foundation
 
 - Next.js 16 App Router application with TypeScript strict mode and Tailwind CSS 4.

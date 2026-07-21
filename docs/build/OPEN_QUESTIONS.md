@@ -56,4 +56,22 @@ Raised per `AGENTS.md` ("Do not silently choose between conflicting requirements
     grounds rather than confidentiality); or split the public-facing engineering
     specification from the private planning material.
 
+16. **U.S. English house style.** Phase 00 adopts U.S. English with `canceled`
+    (single-l), documented in `docs/standards/COPY_STANDARD.md`. Open to owner
+    ratification; a different house style is cheap to switch while the corpus is
+    small. The `cancelled` status enum value is intentionally left British to
+    mirror the v1.0 spec vocabulary, being an identifier rather than copy.
+
+17. **Navigation naming (E3), evaluated, no rename made.** The audit asked for
+    explicit decisions on: Command Center vs Field Desk / Intelligence Desk /
+    Home; Interactions vs Interviews & encounters; Evidence & law as one module
+    vs two; Media & assets terminology. ADR-005 ratified the current names on
+    2026-07-19, and renaming ratified routes without new evidence is churn.
+    Recommendation: keep current names; revisit only if field use surfaces a
+    concrete problem. Owner may override per name.
+
+18. **`candidate`/`not-selected` deployment statuses** — carried from #13; the
+    v1.0 status pipeline has no representation for an undecided competing option.
+    Added in Phase 00; awaiting ratification against the spec.
+
 **Resolved:** #12 (colour scheme) — system preference, implemented in Phase 00.

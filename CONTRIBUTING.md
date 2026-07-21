@@ -55,8 +55,11 @@ npm run db:test        # pgTAP database and RLS tests (Phase 01 onward)
 `npm run test:e2e` builds and starts the app itself on port 3100. It requires
 the Playwright browser: `npm run test:e2e:install` once.
 
-CI runs the same checks on every pull request. Both CI and local development use
-the Node version in `.nvmrc`.
+CI runs the same checks on every pull request on the Node version in `.nvmrc`
+(22). Local development may use any supported version (`>=22 <25`); the
+verification artifact records which version produced a given result. See
+`docs/DEPLOYMENT.md` for deployment rules — feature branches produce previews,
+`main` is production, and manual production deploys require explicit authorization.
 
 ## Accessibility
 

@@ -1,6 +1,6 @@
 # Phase 00 — Audit Remediation Plan
 
-Status: **Proposed — implementation not started**
+Status: **Executed.** See `docs/build/PHASE-00-AUDIT-REMEDIATION-REPORT.md` for results.
 Branch: `feat/phase-00-foundation` · PR #1 (remains open, not merged)
 Baseline commit: `e7b183c`
 Author: Codex agent session
