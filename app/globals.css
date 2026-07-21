@@ -7,7 +7,7 @@
    warm paper, dense slate ink, monospace for anything that identifies a record,
    and a single reserved accent that means "this needs your attention".
 
-   Colour is never the only carrier of meaning (`docs/standards/UI_STANDARD.md`).
+   Color is never the only carrier of meaning (`docs/standards/UI_STANDARD.md`).
    Every status token is paired with an icon and a text label in `StatusBadge`.
 
    All foreground/background pairs below are verified against WCAG 2.2 AA by

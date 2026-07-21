@@ -103,7 +103,7 @@ export const SEED_DEPLOYMENTS: readonly Deployment[] = [
       },
       {
         id: "mh-targets",
-        label: "Target list built and prioritised",
+        label: "Target list built and prioritized",
         status: "not-started",
         required: true,
         note: "Not started while selection is open. Requires Phase 03.",
@@ -175,7 +175,7 @@ export const SEED_DEPLOYMENTS: readonly Deployment[] = [
       },
       {
         id: "rk-targets",
-        label: "Target list built and prioritised",
+        label: "Target list built and prioritized",
         status: "not-started",
         required: true,
         note: "Not started while selection is open. Requires Phase 03.",
@@ -192,7 +192,7 @@ export const SEED_DEPLOYMENTS: readonly Deployment[] = [
         label: "Jurisdictional law and policy baseline recorded",
         status: "not-started",
         required: true,
-        note: "Regulatory status must be captured with effective dates, not summarised.",
+        note: "Regulatory status must be captured with effective dates, not summarized.",
       },
       {
         id: "rk-vault",

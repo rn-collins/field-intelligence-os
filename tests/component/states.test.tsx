@@ -42,7 +42,7 @@ describe("ErrorState", () => {
 
 describe("RestrictedState", () => {
   /**
-   * Restriction is correct system behaviour, not a fault. It must not be
+   * Restriction is correct system behavior, not a fault. It must not be
    * announced as an error, and the copy must not describe what is being
    * withheld — the shape of protected material is itself protected.
    */
@@ -87,7 +87,7 @@ describe("DemoDataBanner", () => {
   });
 
   it("offers no way to dismiss it", () => {
-    // AGENTS.md requires demonstration records to be clearly labelled. A
+    // AGENTS.md requires demonstration records to be clearly labeled. A
     // dismissible marker is one that will eventually be dismissed and forgotten.
     render(<DemoDataBanner />);
 

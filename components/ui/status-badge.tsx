@@ -19,7 +19,7 @@ import {
  * The API enforces that rule rather than documenting it. There is no way to
  * render a badge without a text label — the label is a required child, and each
  * tone carries a distinct icon *shape*, so the badge survives greyscale,
- * colour-blindness and low-quality projection.
+ * color-blindness and low-quality projection.
  */
 
 export type StatusTone =

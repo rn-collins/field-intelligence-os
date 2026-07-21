@@ -37,7 +37,7 @@ describe("StatusBadge", () => {
     expect(svg).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("distinguishes tones by icon shape, not only by colour", () => {
+  it("distinguishes tones by icon shape, not only by color", () => {
     const paths = TONES.map((tone) => {
       const { container, unmount } = render(<StatusBadge tone={tone}>State</StatusBadge>);
       const markup = container.querySelector("svg")?.innerHTML ?? "";
@@ -45,7 +45,7 @@ describe("StatusBadge", () => {
       return markup;
     });
 
-    // `pending` and `in-progress` share a colour token, `disputed` and
+    // `pending` and `in-progress` share a color token, `disputed` and
     // `blocked` likewise — so their glyphs must differ.
     expect(new Set(paths).size).toBe(TONES.length);
   });

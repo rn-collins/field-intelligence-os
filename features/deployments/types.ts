@@ -50,7 +50,7 @@ export function isCommitted(deployment: { readonly status: DeploymentStatus }): 
  * Provenance is a required discriminant rather than an optional boolean.
  *
  * Phase 00 ships demonstration data only, and `AGENTS.md` requires the
- * Manhattan and Reykjavík records to be clearly labelled. Making this a
+ * Manhattan and Reykjavík records to be clearly labeled. Making this a
  * required literal means a record cannot reach a rendering surface without
  * declaring what it is, and a future real record cannot be typed into a
  * demonstration slot by accident.

@@ -26,7 +26,7 @@ for (const route of ALL_ROUTES) {
   });
 }
 
-test.describe("dark colour scheme", () => {
+test.describe("dark color scheme", () => {
   test.use({ colorScheme: "dark" });
 
   for (const route of ["/", "/claims", "/field"]) {

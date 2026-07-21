@@ -5,7 +5,7 @@ import type { SVGProps } from "react";
  *
  * Hand-written rather than pulled from an icon package: Phase 00 needs eight
  * glyphs, and the status icons must be distinguishable by *shape* alone for the
- * non-colour-only requirement in `docs/standards/UI_STANDARD.md`. A stock set
+ * non-color-only requirement in `docs/standards/UI_STANDARD.md`. A stock set
  * optimised for visual consistency tends to work against that.
  *
  * All icons are decorative — they always sit beside a text label — so they are

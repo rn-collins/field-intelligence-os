@@ -10,7 +10,7 @@ import { SEED_AS_OF, SEED_DEPLOYMENTS, SEPTEMBER_DECISION_INPUTS } from "@/lib/s
  *
  * `AGENTS.md` requires seed data to contain no secrets or sensitive personal
  * data, and requires the Manhattan and Reykjavík records to be clearly
- * labelled. These checks catch the mechanical failures — an email address, a
+ * labeled. These checks catch the mechanical failures — an email address, a
  * phone number, a missing provenance flag. They cannot catch a judgement
  * failure, such as a target name that happens to look like ordinary prose, so
  * changes to the seed still need a human read against
