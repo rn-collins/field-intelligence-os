@@ -49,13 +49,14 @@ export function isCommitted(deployment: { readonly status: DeploymentStatus }): 
 /**
  * Provenance is a required discriminant rather than an optional boolean.
  *
- * Phase 00 ships demonstration data only, and `AGENTS.md` requires the
- * Manhattan and Reykjavík records to be clearly labeled. Making this a
- * required literal means a record cannot reach a rendering surface without
- * declaring what it is, and a future real record cannot be typed into a
- * demonstration slot by accident.
+ * `AGENTS.md` requires demonstration records to be clearly labeled. Making this
+ * a required literal means a record cannot reach a rendering surface without
+ * declaring what it is, and — the point — a `"live"` record from the database
+ * can never be typed into a `"demonstration"` slot by accident, nor a sample
+ * shown without its marker. Phase 01's `deploymentFromRow` stamps `"live"`;
+ * the Phase 00 seed stamps `"demonstration"`.
  */
-export type Provenance = "demonstration";
+export type Provenance = "demonstration" | "live";
 
 export type PrerequisiteStatus = "complete" | "in-progress" | "not-started" | "blocked";
 
