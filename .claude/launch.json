@@ -6,6 +6,63 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "audit-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8934", "--directory", "/Users/rn/rn-audit-tmp"],
+      "port": 8934
+    },
+    {
+      "name": "audit-bm-intel",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/rn/rn-audit-tmp/bm-intel && npm run dev -- -p 4001"],
+      "port": 4001
+    },
+    {
+      "name": "audit-transform-observatory",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/rn/rn-audit-tmp/transform-observatory && npm run dev -- -p 4002"
+      ],
+      "port": 4002
+    },
+    {
+      "name": "audit-aloha-behavioral-intelligence",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/rn/rn-audit-tmp/aloha-behavioral-intelligence && npm run dev -- -p 4003"
+      ],
+      "port": 4003
+    },
+    {
+      "name": "audit-aloha-creator-rights",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/rn/rn-audit-tmp/aloha-creator-rights && npm run dev -- -p 4004"
+      ],
+      "port": 4004
+    },
+    {
+      "name": "audit-aloha-culture-monitor",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/rn/rn-audit-tmp/aloha-culture-monitor && npm run dev -- -p 4005"
+      ],
+      "port": 4005
+    },
+    {
+      "name": "audit-aloha-encoding-effect",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/rn/rn-audit-tmp/aloha-encoding-effect && npm run dev -- -p 4006"
+      ],
+      "port": 4006
     }
   ]
 }
