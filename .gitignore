@@ -15,3 +15,11 @@ supabase/.branches/
 supabase/.temp/
 private/
 secrets/
+next-env.d.ts
+.turbo/
+*.tsbuildinfo
+.vercel
+
+# Local Claude Code settings and temp files
+.claude/settings.local.json
+.claude/*.tmp.*

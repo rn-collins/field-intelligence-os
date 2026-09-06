@@ -19,18 +19,18 @@ Proposed resolution: owner creates the private repo and pushes this folder, or e
 
 ### B-2 — Route vocabulary conflict between the v1.0 spec and the Phase 00 task
 
-| Concept | v1.0 spec (`screen_inventory.csv`) | Phase 00 task (`PHASE-00-CODEX-FOUNDATION.md` §12) | Canonical ontology (`PROJECT_MEMORY.md`) |
-|---|---|---|---|
-| Institutions/orgs | `/institutions` (SCR-05) | "Organizations" | **Organization** |
-| Interactions | `/interactions` (SCR-06) | "Interviews" | **Interaction**, **Interview** |
-| Media | `/archive/ingest` (SCR-10), `/assets/[id]` (SCR-11) | "Media" | **Asset** |
-| Method library | `/library` — "FCIF Library" (SCR-14) | "Canon" | not listed |
+| Concept           | v1.0 spec (`screen_inventory.csv`)                  | Phase 00 task (`PHASE-00-CODEX-FOUNDATION.md` §12) | Canonical ontology (`PROJECT_MEMORY.md`) |
+| ----------------- | --------------------------------------------------- | -------------------------------------------------- | ---------------------------------------- |
+| Institutions/orgs | `/institutions` (SCR-05)                            | "Organizations"                                    | **Organization**                         |
+| Interactions      | `/interactions` (SCR-06)                            | "Interviews"                                       | **Interaction**, **Interview**           |
+| Media             | `/archive/ingest` (SCR-10), `/assets/[id]` (SCR-11) | "Media"                                            | **Asset**                                |
+| Method library    | `/library` — "FCIF Library" (SCR-14)                | "Canon"                                            | not listed                               |
 
-`AGENTS.md` puts the v1.0 specification above `ARCHITECTURE.md` and above implementation, but `PROJECT_MEMORY.md` fixes the canonical entity nouns, and the Phase 00 task is the direct instruction. Recommendation, submitted as **proposed ADR-005** rather than applied silently: routes follow the canonical ontology nouns (`/organizations`, `/interactions`, `/assets`), navigation *labels* follow `docs/ux/NAVIGATION_AND_SCREEN_MAP.md` ("People & Organizations", "Interviews & Interactions"), and `/library` keeps the spec's route with the Phase 00 label "Canon & Standards". Ingest becomes `/assets/ingest` rather than `/archive/ingest` so there is one media root. Nothing in Phase 00 depends on this being right — these are empty-state placeholders — but the URLs become public surface in Phase 02+, so the decision should be ratified now.
+`AGENTS.md` puts the v1.0 specification above `ARCHITECTURE.md` and above implementation, but `PROJECT_MEMORY.md` fixes the canonical entity nouns, and the Phase 00 task is the direct instruction. Recommendation, submitted as **proposed ADR-005** rather than applied silently: routes follow the canonical ontology nouns (`/organizations`, `/interactions`, `/assets`), navigation _labels_ follow `docs/ux/NAVIGATION_AND_SCREEN_MAP.md` ("People & Organizations", "Interviews & Interactions"), and `/library` keeps the spec's route with the Phase 00 label "Canon & Standards". Ingest becomes `/assets/ingest` rather than `/archive/ingest` so there is one media root. Nothing in Phase 00 depends on this being right — these are empty-state placeholders — but the URLs become public surface in Phase 02+, so the decision should be ratified now.
 
 ### B-3 — Phase numbering conflict between two roadmap documents
 
-`docs/BUILD_ORDER.md` and `PROJECT_MEMORY.md` agree on an eight-phase order (03 = people/orgs/relationships, 04 = interviews/consent/field mode). `docs/build/ROADMAP.md` describes a *different* ten-phase order (03 = interviews/consent, 05 = assets/Drive, 09 = offline/Notion). Phase 00 is identical in all three, so this does not block implementation, but every empty state I build will name the phase that activates it — and those labels will be wrong under one of the two schemes. Recommendation: treat `BUILD_ORDER.md` + `PROJECT_MEMORY.md` as canonical (two documents agree, and `PROJECT_MEMORY.md` is the durable-decision file), and rewrite `docs/build/ROADMAP.md` to match as part of Phase 00's documentation pass.
+`docs/BUILD_ORDER.md` and `PROJECT_MEMORY.md` agree on an eight-phase order (03 = people/orgs/relationships, 04 = interviews/consent/field mode). `docs/build/ROADMAP.md` describes a _different_ ten-phase order (03 = interviews/consent, 05 = assets/Drive, 09 = offline/Notion). Phase 00 is identical in all three, so this does not block implementation, but every empty state I build will name the phase that activates it — and those labels will be wrong under one of the two schemes. Recommendation: treat `BUILD_ORDER.md` + `PROJECT_MEMORY.md` as canonical (two documents agree, and `PROJECT_MEMORY.md` is the durable-decision file), and rewrite `docs/build/ROADMAP.md` to match as part of Phase 00's documentation pass.
 
 ### B-4 — Node version
 
@@ -42,9 +42,9 @@ CI pins Node 22; this machine runs Node 24.16.0. Resolution: add `.nvmrc` (22) a
 
 Phase 00 produces a **reproducible, portfolio-quality, secretless foundation**: an application shell, a design system, twelve routed modules with honest empty states, one static Command Center proving the information architecture with clearly-labeled Manhattan and Reykjavík demonstration data, and the full quality apparatus (lint, typecheck, unit/component tests, e2e smoke, accessibility checks, CI, production build).
 
-It explicitly does **not** include the production schema, real auth, Drive/Notion sync, AI extraction, offline sync, or any private source material. The static Command Center must read as a *proof of information architecture*, not as a working product — every module page states which phase activates it.
+It explicitly does **not** include the production schema, real auth, Drive/Notion sync, AI extraction, offline sync, or any private source material. The static Command Center must read as a _proof of information architecture_, not as a working product — every module page states which phase activates it.
 
-The one design risk worth naming up front: `PHASE-00-CODEX-FOUNDATION.md` §11 says the dashboard "must not pretend to be a finished functional product," while §36 of its acceptance criteria demands it be "visually distinctive and portfolio-quality." These pull in opposite directions. My resolution is *honest polish*: high craft in typography, spacing, and state design; zero fake interactivity. No buttons that do nothing, no charts of invented metrics, no counters not backed by a real seed record. Every demonstration surface carries a persistent, non-dismissable "Demonstration data" marker.
+The one design risk worth naming up front: `PHASE-00-CODEX-FOUNDATION.md` §11 says the dashboard "must not pretend to be a finished functional product," while §36 of its acceptance criteria demands it be "visually distinctive and portfolio-quality." These pull in opposite directions. My resolution is _honest polish_: high craft in typography, spacing, and state design; zero fake interactivity. No buttons that do nothing, no charts of invented metrics, no counters not backed by a real seed record. Every demonstration surface carries a persistent, non-dismissable "Demonstration data" marker.
 
 ---
 
@@ -116,7 +116,7 @@ Enforcement of `AGENTS.md`'s service-role rule: `SUPABASE_SERVICE_ROLE_KEY` is r
 
 Tokens live as CSS custom properties inside Tailwind v4's `@theme` block, so they are available to both Tailwind utilities and raw CSS.
 
-- **Palette**: a warm-neutral paper base and a deep slate ink, with a single restrained accent (signal amber) reserved exclusively for *needs-attention* states. Verification/consent/restriction states get their own semantic tokens. Light and dark both defined; both contrast-validated.
+- **Palette**: a warm-neutral paper base and a deep slate ink, with a single restrained accent (signal amber) reserved exclusively for _needs-attention_ states. Verification/consent/restriction states get their own semantic tokens. Light and dark both defined; both contrast-validated.
 - **Type**: one variable sans for interface, one monospace for identifiers, timestamps, and record IDs. Record IDs render monospace everywhere — a small thing that signals "evidentiary system" rather than "SaaS dashboard."
 - **Never color-only** (`docs/standards/UI_STANDARD.md`): `StatusBadge` requires both an icon and a text label; the API makes color alone unrepresentable.
 - **Density**: desktop is research-dense; `/field` is large-target, one-handed, high-contrast.
@@ -131,20 +131,20 @@ Semantic landmarks, one `<h1>` per page, skip-to-content link, visible focus rin
 
 Kept deliberately small; `docs/standards/CODING_STANDARD.md` requires justifying significant additions.
 
-| Package | Why |
-|---|---|
-| `next` (15.x), `react`, `react-dom` (19.x) | Required stack |
-| `typescript` (5.x) | Required stack, strict mode |
-| `tailwindcss` (4.x), `@tailwindcss/postcss` | Required stack; v4 for CSS-native `@theme` tokens |
-| `@supabase/supabase-js`, `@supabase/ssr` | Required stack; placeholders only in Phase 00 |
-| `zod` | `docs/standards/API_STANDARD.md` + `CODING_STANDARD.md` require runtime validation of external input; used for env now, payloads later |
-| `vitest`, `@vitejs/plugin-react`, `jsdom` | CI already invokes `npm test -- --run` (Vitest's flag) |
-| `@testing-library/react`, `/dom`, `/user-event`, `/jest-dom` | Component-state tests required by `TESTING_STANDARD.md` |
-| `@playwright/test`, `@axe-core/playwright` | E2E smoke + automated accessibility |
-| `eslint` (9.x), `eslint-config-next`, `@typescript-eslint/*`, `eslint-plugin-jsx-a11y` | Lint + a11y linting |
-| `prettier`, `prettier-plugin-tailwindcss` | Deterministic formatting; class ordering |
-| `server-only` | Enforces the service-role boundary at build time |
-| `clsx`, `tailwind-merge` | Small, standard class composition |
+| Package                                                                                | Why                                                                                                                                    |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `next` (15.x), `react`, `react-dom` (19.x)                                             | Required stack                                                                                                                         |
+| `typescript` (5.x)                                                                     | Required stack, strict mode                                                                                                            |
+| `tailwindcss` (4.x), `@tailwindcss/postcss`                                            | Required stack; v4 for CSS-native `@theme` tokens                                                                                      |
+| `@supabase/supabase-js`, `@supabase/ssr`                                               | Required stack; placeholders only in Phase 00                                                                                          |
+| `zod`                                                                                  | `docs/standards/API_STANDARD.md` + `CODING_STANDARD.md` require runtime validation of external input; used for env now, payloads later |
+| `vitest`, `@vitejs/plugin-react`, `jsdom`                                              | CI already invokes `npm test -- --run` (Vitest's flag)                                                                                 |
+| `@testing-library/react`, `/dom`, `/user-event`, `/jest-dom`                           | Component-state tests required by `TESTING_STANDARD.md`                                                                                |
+| `@playwright/test`, `@axe-core/playwright`                                             | E2E smoke + automated accessibility                                                                                                    |
+| `eslint` (9.x), `eslint-config-next`, `@typescript-eslint/*`, `eslint-plugin-jsx-a11y` | Lint + a11y linting                                                                                                                    |
+| `prettier`, `prettier-plugin-tailwindcss`                                              | Deterministic formatting; class ordering                                                                                               |
+| `server-only`                                                                          | Enforces the service-role boundary at build time                                                                                       |
+| `clsx`, `tailwind-merge`                                                               | Small, standard class composition                                                                                                      |
 
 **Deliberately excluded in Phase 00**: any component library (shadcn/Radix/MUI) — Phase 00 needs ~10 primitives and a distinctive aesthetic, and a library would push toward the generic template the task forbids; state managers; ORMs (migrations are canonical SQL per `DATABASE_STANDARD.md`); analytics; any paid vendor (`FIRST_TASK.md` §8). Radix should be reconsidered in Phase 02 when real dialogs, comboboxes, and menus appear — hand-rolling those is where accessibility actually breaks.
 
@@ -155,6 +155,7 @@ Kept deliberately small; `docs/standards/CODING_STANDARD.md` requires justifying
 **Created (new):** `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `.prettierrc`, `.prettierignore`, `vitest.config.ts`, `vitest.setup.ts`, `playwright.config.ts`, `.nvmrc`, `vercel.json`, `next-env.d.ts` (generated, gitignored), plus everything under the tree in §2.1.
 
 **Changed (existing):**
+
 - `README.md` — replace "Production code has not yet been scaffolded" with real prerequisites, install/run/test/build commands, environment setup, project structure, and a Phase 00 scope statement.
 - `.gitignore` — add `next-env.d.ts`, `.turbo/`, `*.tsbuildinfo`.
 - `.github/workflows/ci.yml` — add formatting check, Playwright job with browser caching and report artifact upload, `concurrency` cancel-in-progress, and explicit `timeout-minutes`.
@@ -195,15 +196,15 @@ npm run db:test             # pgTAP via scripts/db-test.sh (no-op in Phase 00)
 
 Mapped to `docs/standards/TESTING_STANDARD.md`. Phase 00 can only satisfy the layers that have subject matter; the rest are scaffolded with conventions so Phase 01 has somewhere to write them.
 
-| Layer | Phase 00 coverage |
-|---|---|
-| Unit | `lib/env.ts` parsing incl. the unconfigured path; `features/deployments/readiness.ts` domain logic; `features/navigation/nav-model.ts` invariants (every nav route resolves to a real page — this catches dead links at test time) |
-| Component | `StatusBadge` never renders color without a text label; `EmptyState` / `ErrorState` / `RestrictedState` / `LoadingState` each render correct roles and headings; `DemoDataBanner` present on every seeded surface; `AppShell` mobile nav `aria-expanded` / `aria-current` |
-| Database / RLS | **Not applicable** — no schema. `supabase/tests/` + `CONVENTIONS.md` + a runner script are established so Phase 01 starts with the harness in place |
-| Integration | **Not applicable** — no auth or storage. A test asserts `lib/supabase/*` throws `SupabaseNotConfiguredError` rather than silently returning a broken client |
-| E2E | Playwright: shell renders; every one of the twelve module routes returns 200 with an `<h1>`; Command Center shows both Manhattan and Reykjavík with the demonstration marker; Field Mode reachable at mobile viewport; keyboard tab order reaches skip link → nav → main |
-| Accessibility | `@axe-core/playwright` scan on every route at 390px and 1440px, light and dark, zero serious/critical violations; plus a documented manual keyboard/screen-reader pass in the completion report |
-| Build | `npm run build` with **no `.env` file present** — this is the check that proves the Vercel-without-secrets requirement |
+| Layer          | Phase 00 coverage                                                                                                                                                                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit           | `lib/env.ts` parsing incl. the unconfigured path; `features/deployments/readiness.ts` domain logic; `features/navigation/nav-model.ts` invariants (every nav route resolves to a real page — this catches dead links at test time)                                        |
+| Component      | `StatusBadge` never renders color without a text label; `EmptyState` / `ErrorState` / `RestrictedState` / `LoadingState` each render correct roles and headings; `DemoDataBanner` present on every seeded surface; `AppShell` mobile nav `aria-expanded` / `aria-current` |
+| Database / RLS | **Not applicable** — no schema. `supabase/tests/` + `CONVENTIONS.md` + a runner script are established so Phase 01 starts with the harness in place                                                                                                                       |
+| Integration    | **Not applicable** — no auth or storage. A test asserts `lib/supabase/*` throws `SupabaseNotConfiguredError` rather than silently returning a broken client                                                                                                               |
+| E2E            | Playwright: shell renders; every one of the twelve module routes returns 200 with an `<h1>`; Command Center shows both Manhattan and Reykjavík with the demonstration marker; Field Mode reachable at mobile viewport; keyboard tab order reaches skip link → nav → main  |
+| Accessibility  | `@axe-core/playwright` scan on every route at 390px and 1440px, light and dark, zero serious/critical violations; plus a documented manual keyboard/screen-reader pass in the completion report                                                                           |
+| Build          | `npm run build` with **no `.env` file present** — this is the check that proves the Vercel-without-secrets requirement                                                                                                                                                    |
 
 Security assertions worth calling out as tests rather than review comments: no `SUPABASE_SERVICE_ROLE_KEY` reference outside `lib/supabase/server.ts`; no `.env` file committed; no seed record containing contact details, real source identity, or unpublished reporting plans.
 
@@ -211,21 +212,21 @@ Security assertions worth calling out as tests rather than review comments: no `
 
 ## 7. Risks
 
-| Risk | Mitigation |
-|---|---|
-| **B-1 no Git repo** — no branch, no PR, no reviewable diff | Blocking. Resolve with the owner before writing code |
-| Tailwind v4 is a substantial change from v3 and much online guidance is stale | Tokens defined once in `@theme`; if v4 causes friction, fall back to v3 with `tailwind.config.ts` — a contained, one-file decision |
-| "Portfolio-quality" vs "must not pretend to be finished" | Honest-polish rule (§1): high craft, zero fake interactivity, persistent demonstration-data marker |
-| Demonstration data leaking real reporting plans | Manhattan/Reykjavík seed uses only what is already public in `PROJECT_MEMORY.md` (city, dates, topic lanes). No names, no contacts, no target lists, no unpublished angles. Reviewed against `SECURITY_PRIVACY_STANDARD.md` before commit |
-| Playwright in CI is slow/flaky and blocks merges | Separate job, browser cache, `timeout-minutes`, smoke scope only |
-| Empty-state phase labels go stale | Single `features/navigation/nav-model.ts` source; a unit test asserts labels match `BUILD_ORDER.md` phases |
-| Scope creep into Phase 01 domain features | Every module page is a placeholder using one shared component. If a page needs bespoke logic, that is the signal it belongs to a later phase |
+| Risk                                                                          | Mitigation                                                                                                                                                                                                                                |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **B-1 no Git repo** — no branch, no PR, no reviewable diff                    | Blocking. Resolve with the owner before writing code                                                                                                                                                                                      |
+| Tailwind v4 is a substantial change from v3 and much online guidance is stale | Tokens defined once in `@theme`; if v4 causes friction, fall back to v3 with `tailwind.config.ts` — a contained, one-file decision                                                                                                        |
+| "Portfolio-quality" vs "must not pretend to be finished"                      | Honest-polish rule (§1): high craft, zero fake interactivity, persistent demonstration-data marker                                                                                                                                        |
+| Demonstration data leaking real reporting plans                               | Manhattan/Reykjavík seed uses only what is already public in `PROJECT_MEMORY.md` (city, dates, topic lanes). No names, no contacts, no target lists, no unpublished angles. Reviewed against `SECURITY_PRIVACY_STANDARD.md` before commit |
+| Playwright in CI is slow/flaky and blocks merges                              | Separate job, browser cache, `timeout-minutes`, smoke scope only                                                                                                                                                                          |
+| Empty-state phase labels go stale                                             | Single `features/navigation/nav-model.ts` source; a unit test asserts labels match `BUILD_ORDER.md` phases                                                                                                                                |
+| Scope creep into Phase 01 domain features                                     | Every module page is a placeholder using one shared component. If a page needs bespoke logic, that is the signal it belongs to a later phase                                                                                              |
 
 ---
 
 ## 8. Unresolved questions requiring the product owner
 
-1. **B-1**: authorize `git init` + initial commit, or push to the private GitHub repo first? *(blocking)*
+1. **B-1**: authorize `git init` + initial commit, or push to the private GitHub repo first? _(blocking)_
 2. **B-2 / proposed ADR-005**: ratify the route vocabulary before URLs become surface area.
 3. **B-3**: confirm `BUILD_ORDER.md` over `ROADMAP.md`, and authorize rewriting the latter.
 4. Light-first, dark-first, or system-preference default for the interface? Plan assumes system-preference with both fully specified.

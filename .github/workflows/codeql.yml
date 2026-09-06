@@ -1,0 +1,50 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, so a newly disclosed pattern is caught even without a push.
+    - cron: "27 4 * * 1"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze JavaScript/TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+      # upload: never — the Security tab / SARIF upload needs GitHub
+      # Advanced Security, which isn't available here: this is a private
+      # repo under a personal account, and the API's own
+      # security_and_analysis field comes back null (confirmed, not just
+      # unconfigured). Every upload attempt fails with "Code scanning is
+      # not enabled", regardless of what the scan itself finds — that
+      # failure was masking the actual analysis, which runs cleanly.
+      # Skipping the upload keeps the real gate (did the scan run) without
+      # depending on a feature this account doesn't have; results are
+      # saved as a downloadable artifact below instead of the Security tab.
+      - uses: github/codeql-action/analyze@v3
+        with:
+          output: codeql-results
+          upload: never
+          upload-database: false
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: codeql-results
+          path: codeql-results
+          retention-days: 30
