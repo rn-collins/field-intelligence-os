@@ -5,7 +5,7 @@
 -- that, not just the application.
 
 begin;
-select plan(14);
+select plan(13);
 
 create extension if not exists pgtap;
 

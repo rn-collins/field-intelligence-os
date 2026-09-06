@@ -8,7 +8,7 @@
 -- Run with: npm run db:start && npm run db:test
 
 begin;
-select plan(24);
+select plan(26);
 
 -- Extensions used by the harness.
 create extension if not exists pgtap;
