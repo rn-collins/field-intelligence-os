@@ -33,6 +33,21 @@ create type sensitivity_level as enum (
   'highly_restricted'
 );
 
+-- The verification spine's status set, from the canonical schema
+-- (`docs/source-materials/engineering-package-expanded/fios_v1_spec/schema.sql`).
+-- Used by `claims.verification` (current status) and `verification_events`
+-- (`from_status`/`to_status`, the append-only history of how it got there).
+create type verification_status as enum (
+  'unreviewed',
+  'unverified',
+  'partially_verified',
+  'verified',
+  'disputed',
+  'false',
+  'superseded',
+  'do_not_use'
+);
+
 -- Workspace roles, from permission_matrix.csv. `service` is for automated jobs.
 create type member_role as enum (
   'owner',
