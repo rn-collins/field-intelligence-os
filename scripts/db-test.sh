@@ -50,18 +50,25 @@ if [ ${#tests[@]} -eq 0 ]; then
   exit 0
 fi
 
+# Tooling-absent is distinct from test-failure. The tests exist and are the
+# real gate, but this environment cannot run them. Report `unrun`, not `failed`
+# — claiming the RLS tests failed would be as dishonest as claiming they passed.
+# Still exits non-zero, so it is never mistaken for a pass.
 if ! command -v supabase >/dev/null 2>&1; then
-  echo "FAILED: ${#tests[@]} database test file(s) exist but the Supabase CLI is not installed."
-  echo "Install it from https://supabase.com/docs/guides/cli, then run: npm run db:start"
-  status failed
-  exit 1
+  echo "UNRUN: ${#tests[@]} database test file(s) exist but the Supabase CLI is not installed."
+  echo "These tests are the Phase 01 isolation gate. To run them:"
+  echo "  1. Install the Supabase CLI: https://supabase.com/docs/guides/cli"
+  echo "  2. Install Docker and start it"
+  echo "  3. npm run db:start && npm run db:test"
+  status unrun
+  exit 2
 fi
 
 if ! supabase status >/dev/null 2>&1; then
-  echo "FAILED: ${#tests[@]} database test file(s) exist but local Supabase is not running."
+  echo "UNRUN: ${#tests[@]} database test file(s) exist but local Supabase is not running."
   echo "Start it with: npm run db:start"
-  status failed
-  exit 1
+  status unrun
+  exit 2
 fi
 
 echo "Running ${#tests[@]} database test file(s)…"
