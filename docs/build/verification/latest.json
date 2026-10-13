@@ -1,0 +1,23 @@
+{
+  "commit": "004d2ec6162bcd28a336b5c9d6443a8c386bef91",
+  "branch": "feat/phase-00-foundation",
+  "timestamp": "2026-07-21T05:48:38Z",
+  "environment": "local",
+  "node": "v24.16.0",
+  "npm": "11.13.0",
+  "checks": {
+    "format": { "status": "pass", "detail": "All matched files use Prettier code style!" },
+    "lint": { "status": "pass", "detail": "" },
+    "typecheck": { "status": "pass", "detail": "" },
+    "unit": {
+      "status": "pass",
+      "detail": "   Duration  3.39s (transform 796ms, setup 1.58s, import 1.35s, tests 1.44s, environment 9.06s)"
+    },
+    "build": { "status": "pass", "detail": "○  (Static)  prerendered as static content" },
+    "e2e": { "status": "pass", "detail": "  130 passed (29.6s)" },
+    "db": {
+      "status": "skipped",
+      "detail": "SKIPPED — not applicable. Phase 00 defines no database schema."
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.next/
+out/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+package-lock.json
+next-env.d.ts
+
+# Binary and generated source material must never be reformatted.
+docs/source-materials/
+
+# Canonical governance and specification documents.
+#
+# These predate Phase 00 and are owned by the product owner, not by tooling.
+# Prettier's markdown rules would rewrite their whitespace, producing diff noise
+# in exactly the files where a diff should mean a deliberate decision. Content
+# changes to these still go through review; they simply are not auto-formatted.
+AGENTS.md
+START_HERE.md
+PROJECT_MEMORY.md
+SECURITY.md
+CONTRIBUTING.md
+LICENSE
+.codex/
+docs/BUILD_ORDER.md
+docs/PRODUCT_VISION.md
+docs/DEVELOPMENT_WORKFLOW.md
+docs/decisions/ADR-001-canonical-systems.md
+docs/decisions/ADR-002-supabase-and-rls.md
+docs/decisions/ADR-003-drive-media-vault.md
+docs/decisions/ADR-004-human-review-ai.md
+docs/build/PHASE-00-CODEX-FOUNDATION.md
+docs/build/OWNER_SETUP_CHECKLIST.md
+docs/build/CODEX_OWNER_HANDOFF.md
+docs/memory/
+docs/phases/
+docs/product/
+docs/releases/
+docs/standards/
+docs/ux/
+.github/pull_request_template.md
+.github/ISSUE_TEMPLATE/
